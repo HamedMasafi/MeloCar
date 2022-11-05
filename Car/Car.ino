@@ -3,25 +3,44 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 
-#define PIN_CSN 10
-#define PIN_CE  9
+#include <Adafruit_NeoPixel.h>
+
+#include "common.h"
+#include "pins.h"
+#include "led.h"
+#include "commands.h"
 
 const uint64_t pipeIn = 0x662266;
-#define PIN_MOTOR_1 8
-#define PIN_MOTOR_2 7
-#define PIN_SERVO 9
 #define MOTOR_START 0
 #define MOTOR_STOP 2
 #define MOTOR_REVERSE 1
 
+#define LED_TYPE    WS2812B
+#define COLOR_ORDER GRB
+#define BRIGHTNESS  64
+#define UPDATES_PER_SECOND 100
 
 Servo servo;
 RF24 radio(PIN_CE, PIN_CSN); 
 
-
 struct MyData {
   byte test;
+  byte type;
+  byte param1;
+  byte param2;
+  byte terminate;
 };
+
+unsigned long lastRecvTime = 0;
+void recvData()
+{
+  MyData data;
+  if ( radio.available() )//Check whether there are bytes available to be read
+  {
+    radio.read(&data, sizeof(MyData));//Read payload data from the RX FIFO buffer(s).
+    lastRecvTime = millis(); //here we receive the data
+  }
+}
 
 void shift(int angle) {
   servo.write(angle);
@@ -70,12 +89,47 @@ void setup() {
   radio.startListening();//Start listening on the pipes opened for reading.
 
   Serial.begin(9600);
+
+  shift(90);
+
+  setup_leds();
 }
 
+
+#define LED_SLEEP_TIME 150
 void loop() {
-  // put your main code here, to run repeatedly:
   Serial.println("Starting");
-  shift(0);
+  
+
+  for(int i=0; i< 3; i++)  {
+    set_color(pixels.Color(150, 0, 0));
+    delay(LED_SLEEP_TIME);
+  
+    turn_off_leds();
+    delay(LED_SLEEP_TIME);
+  }
+
+  for(int i=0; i< 3; i++)  {
+    set_color(pixels.Color(0, 0, 150));
+    delay(LED_SLEEP_TIME);
+  
+    turn_off_leds();
+    delay(LED_SLEEP_TIME);
+  }
+  
+  motor_command(MOTOR_START);
+  delay(2000);
+
+  /*
+  motor_command(MOTOR_STOP);
+  delay(500);
+
+  motor_command(MOTOR_REVERSE);
+  delay(2000);
+
+  motor_command(MOTOR_STOP);
+  delay(500);*/
+/*  shift(0);
   motor_command(MOTOR_START);
   delay(1000);
 
@@ -88,4 +142,6 @@ void loop() {
   shift(180);
   motor_command(MOTOR_REVERSE);
   delay(1000);
+*/
+
 }

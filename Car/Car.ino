@@ -17,16 +17,6 @@
 
 Servo servo;
 
-unsigned long lastRecvTime = 0;
-void recvData() {
-  MyData data;
-  if (radio.available())  //Check whether there are bytes available to be read
-  {
-    radio.read(&data, sizeof(MyData));  //Read payload data from the RX FIFO buffer(s).
-    lastRecvTime = millis();            //here we receive the data
-  }
-}
-
 void shift(int angle) {
   servo.write(angle);
   delay(15);
@@ -67,11 +57,24 @@ void setup() {
   turn_off_leds();
 }
 
-
+rf_command cmd;
 #define LED_SLEEP_TIME 150
+
+unsigned long lastLedTime = 0;
+
 void loop() {
   Serial.println("Starting");
 
+  if (Rf::read(&cmd)) {
+    //process cmd
+  }
+
+  unsigned long now = millis();
+  if ( now - lastLedTime > 100 ) {
+    
+    Led::step();
+    lastLedTime = now;
+  }
 
   for (int i = 0; i < 3; i++) {
     Led::set_color(150, 0, 0);

@@ -1,3 +1,6 @@
+#ifndef COMMANDS_H
+#define COMMANDS_H
+
 #define RF_COMMAND_SHIF 104
 #define RF_COMMAND_START 167
 #define RF_COMMAND_STOP 201
@@ -12,3 +15,5 @@ struct rf_command {
   byte param2;
   byte terminate;
 };
+
+#endif // COMMANDS_H

@@ -9,36 +9,21 @@
 #include "pins.h"
 #include "led.h"
 #include "commands.h"
+#include "rf.h"
 
-const uint64_t pipeIn = 0x662266;
 #define MOTOR_START 0
 #define MOTOR_STOP 2
 #define MOTOR_REVERSE 1
 
-#define LED_TYPE    WS2812B
-#define COLOR_ORDER GRB
-#define BRIGHTNESS  64
-#define UPDATES_PER_SECOND 100
-
 Servo servo;
-RF24 radio(PIN_CE, PIN_CSN); 
-
-struct MyData {
-  byte test;
-  byte type;
-  byte param1;
-  byte param2;
-  byte terminate;
-};
 
 unsigned long lastRecvTime = 0;
-void recvData()
-{
+void recvData() {
   MyData data;
-  if ( radio.available() )//Check whether there are bytes available to be read
+  if (radio.available())  //Check whether there are bytes available to be read
   {
-    radio.read(&data, sizeof(MyData));//Read payload data from the RX FIFO buffer(s).
-    lastRecvTime = millis(); //here we receive the data
+    radio.read(&data, sizeof(MyData));  //Read payload data from the RX FIFO buffer(s).
+    lastRecvTime = millis();            //here we receive the data
   }
 }
 
@@ -65,58 +50,45 @@ void motor_command(int command) {
 }
 
 void setup() {
+  Led::setup();
+  set_color(255, 255, 255);
+
   servo.attach(PIN_SERVO);
   shift(90);
-  
+
   pinMode(PIN_MOTOR_1, OUTPUT);
   pinMode(PIN_MOTOR_2, OUTPUT);
 
-  radio.begin();
-  radio.setDataRate(RF24_250KBPS); //speed  RF24_250KBPS for 250kbs, RF24_1MBPS for 1Mbps, or RF24_2MBPS for 2Mbps
-  radio.openWritingPipe(pipeIn);//Open a pipe for writing
-  radio.openReadingPipe(1, pipeIn);//Open a pipe for reading
-  radio.openReadingPipe(2, pipeIn);//Open a pipe for reading
-  radio.openReadingPipe(3, pipeIn);//Open a pipe for reading
-  radio.openReadingPipe(4, pipeIn);//Open a pipe for reading
-  radio.openReadingPipe(5, pipeIn);//Open a pipe for reading
-  radio.setAutoAck(true); // Ensure autoACK is enabled
-  radio.setChannel(108);// Set RF communication channel.
-  radio.setPALevel(RF24_PA_MAX); //translate to: RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_MED=-6dBM, and RF24_PA_HIGH=0dBm.
-  radio.enableDynamicPayloads(); //This way you don't always have to send large packets just to send them once in a while. This enables dynamic payloads on ALL pipes.
-  //radio.disableDynamicPayloads();//This disables dynamic payloads on ALL pipes. Since Ack Payloads requires Dynamic Payloads, Ack Payloads are also disabled. If dynamic payloads are later re-enabled and ack payloads are desired then enableAckPayload() must be called again as well.
-  radio.setCRCLength(RF24_CRC_16); // Use 8-bit or 16bit CRC for performance. CRC cannot be disabled if auto-ack is enabled. Mode :RF24_CRC_DISABLED  ,RF24_CRC_8 ,RF24_CRC_16
-  radio.setRetries(10, 15);//Set the number of retry attempts and delay between retry attempts when transmitting a payload. The radio is waiting for an acknowledgement (ACK) packet during the delay between retry attempts.Mode: 0-15,0-15
-  radio.startListening();//Start listening on the pipes opened for reading.
+  Rf::setup();
 
   Serial.begin(9600);
 
   shift(90);
-
-  setup_leds();
+  turn_off_leds();
 }
 
 
 #define LED_SLEEP_TIME 150
 void loop() {
   Serial.println("Starting");
-  
 
-  for(int i=0; i< 3; i++)  {
-    set_color(pixels.Color(150, 0, 0));
-    delay(LED_SLEEP_TIME);
-  
-    turn_off_leds();
-    delay(LED_SLEEP_TIME);
-  }
 
-  for(int i=0; i< 3; i++)  {
-    set_color(pixels.Color(0, 0, 150));
+  for (int i = 0; i < 3; i++) {
+    Led::set_color(150, 0, 0);
     delay(LED_SLEEP_TIME);
-  
-    turn_off_leds();
+
+    Led::turn_off();
     delay(LED_SLEEP_TIME);
   }
   
+  for (int i = 0; i < 3; i++) {
+    Led::set_color(0, 0, 150);
+    delay(LED_SLEEP_TIME);
+
+    Led::turn_off();
+    delay(LED_SLEEP_TIME);
+  }
+
   motor_command(MOTOR_START);
   delay(2000);
 
@@ -129,7 +101,7 @@ void loop() {
 
   motor_command(MOTOR_STOP);
   delay(500);*/
-/*  shift(0);
+  /*  shift(0);
   motor_command(MOTOR_START);
   delay(1000);
 
@@ -143,5 +115,4 @@ void loop() {
   motor_command(MOTOR_REVERSE);
   delay(1000);
 */
-
 }

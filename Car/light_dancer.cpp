@@ -2,6 +2,7 @@
 #include "light_dancer.h"
 #include "led.h"
 
+// basic_light_dancer
 basic_light_dancer::~basic_light_dancer()
 {}
 
@@ -9,6 +10,7 @@ void basic_light_dancer::step()
 {
 }
 
+// sequence_light_dancer
 sequence_light_dancer::sequence_light_dancer() : _step(0)
 {
 
@@ -21,6 +23,7 @@ void sequence_light_dancer::step()
   Serial.println("step");
 }
 
+// police_light_dancer
 police_light_dancer::police_light_dancer()
 {
   array = new uint32_t[4] {
@@ -32,7 +35,7 @@ police_light_dancer::police_light_dancer()
   size = 4;
 }
 
-void stepper_dancer::step()
+void blinker_dancer::step()
 {
     _step = (_step + 1) % NUM_LEDS; 
     for (byte i = 0; i < NUM_LEDS; i++) {

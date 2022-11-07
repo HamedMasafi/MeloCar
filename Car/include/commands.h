@@ -10,6 +10,7 @@
 #define RF_COMMAND_SET_LED_BRIGHTNESS 54
 #define RF_COMMAND_SET_LED_ON 97
 #define RF_COMMAND_SET_LED_OFF 21
+#define RF_COMMAND_SET_LED_CHANGE_DANCER 187
 
 struct rf_command {
   byte test;

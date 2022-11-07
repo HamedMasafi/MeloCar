@@ -1,57 +1,25 @@
-#include <Servo.h>
-
 #include "common.h"
 #include "pins.h"
 #include "led.h"
 #include "commands.h"
 #include "rf.h"
+#include "car.h"
 
 #define MOTOR_START 0
 #define MOTOR_STOP 2
 #define MOTOR_REVERSE 1
 
-Servo servo;
-
-void shift(int angle)
-{
-  servo.write(angle);
-  delay(15);
-}
-
-void motor_command(int command)
-{
-  switch (command)
-  {
-  case MOTOR_START:
-    digitalWrite(PIN_MOTOR_1, LOW);
-    digitalWrite(PIN_MOTOR_2, HIGH);
-    break;
-  case MOTOR_STOP:
-    digitalWrite(PIN_MOTOR_1, LOW);
-    digitalWrite(PIN_MOTOR_2, LOW);
-    break;
-  case MOTOR_REVERSE:
-    digitalWrite(PIN_MOTOR_1, HIGH);
-    digitalWrite(PIN_MOTOR_2, LOW);
-    break;
-  }
-}
+Car car;
 
 void setup()
 {
+  Serial.begin(9600);
+
   Led::setup();
   Led::set_color(255, 0, 0);
 
-  servo.attach(PIN_SERVO);
-  shift(90);
-
-  pinMode(PIN_MOTOR_1, OUTPUT);
-  pinMode(PIN_MOTOR_2, OUTPUT);
-  pinMode(PIN_SERVO, OUTPUT);
-
+  car.setup();
   Rf::setup();
-
-  Serial.begin(9600);
 
   Led::turn_off();
 }
@@ -74,28 +42,30 @@ void step_read_command()
   static rf_command cmd;
   if (Rf::read(&cmd))
   {
-    // process cmd
-
     switch (cmd.type)
     {
     case RF_COMMAND_SHIF:
-      shift(cmd.param1);
+      car.shift(cmd.param1);
       break;
 
     case RF_COMMAND_START:
-      motor_command(MOTOR_START);
+      car.forward();
       break;
 
     case RF_COMMAND_REVERSE:
-      motor_command(MOTOR_REVERSE);
+      car.backward();
       break;
 
     case RF_COMMAND_STOP:
-      motor_command(MOTOR_STOP);
+      car.stop();
       break;
 
     case RF_COMMAND_SET_LED_OFF:
       Led::turn_off();
+      break;
+
+    case RF_COMMAND_SET_LED_CHANGE_DANCER:
+      Led::change_dancer();
       break;
     }
 

@@ -16,6 +16,7 @@ void setup();
 void set_color(uint8_t r, uint8_t g, uint8_t b);
 void turn_off();
 void step();
+void change_dancer();
 
 };
 

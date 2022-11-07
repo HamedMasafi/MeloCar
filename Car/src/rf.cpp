@@ -1,14 +1,8 @@
-#include <SPI.h>
-#include <nRF24L01.h>
-#include <RF24.h>
-
-#include "pins.h"
-#include "commands.h"
-
-RF24 radio(PIN_CE, PIN_CSN);
-const uint64_t pipeIn = 0x662266;
+#include "rf.h"
 
 namespace Rf {
+
+RF24 radio(PIN_CE, PIN_CSN);
 
 void setup() {
   radio.begin();

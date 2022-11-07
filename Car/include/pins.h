@@ -1,6 +1,8 @@
 #ifndef PINS_H
 #define PINS_H
 
+#include "simulate.h"
+
 #define PIN_CSN 10
 #define PIN_CE  9
 #define PIN_MOTOR_1 8

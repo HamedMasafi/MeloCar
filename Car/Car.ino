@@ -85,8 +85,12 @@ void loop()
   step_light();
 
   
-  // car.shift(200);
-  // delay(1000);
+   car.shift(100);
+   delay(1000);
+
+   car.shift(0);
+   delay(1000);
+
   /*for (int i = 0; i < 3; i++) {
     Led::set_color(150, 0, 0);
     delay(LED_SLEEP_TIME);

@@ -14,7 +14,7 @@
 
 struct rf_command {
   byte test;
-  byte type;
+  byte type = 0;
   byte param1;
   byte param2;
   byte terminate;

@@ -85,10 +85,13 @@ void loop()
   step_light();
 
   
-   car.shift(100);
+   car.shift(60);
    delay(1000);
 
-   car.shift(0);
+   car.shift(90);
+   delay(1000);
+
+   car.shift(120);
    delay(1000);
 
   /*for (int i = 0; i < 3; i++) {

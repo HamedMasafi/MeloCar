@@ -3,7 +3,7 @@
 #include <Servo.h>
 #include <SPI.h>
 #include <Arduino.h>
-
+#include "utility.h"
 
 void Car::setup()
 {
@@ -35,5 +35,6 @@ void Car::backward()
 
 void Car::shift(int angle)
 {
+    Utility::bound(60, angle, 120);
     servo.write(angle);
 }

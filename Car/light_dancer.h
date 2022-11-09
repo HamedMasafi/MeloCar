@@ -32,7 +32,7 @@ public:
   police_light_dancer();
 };
 
-class stepper_dancer : public basic_light_dancer
+class blinker_dancer : public basic_light_dancer
 {
   uint8_t _step;
 

@@ -20,7 +20,6 @@ void sequence_light_dancer::step()
 {
   _step = (_step + 1) % size;
   Led::set_color(array[_step]);
-  Serial.println("step");
 }
 
 // police_light_dancer

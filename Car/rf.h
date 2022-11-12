@@ -8,12 +8,13 @@
 #include "pins.h"
 #include "commands.h"
 
-const uint64_t pipeIn = 0x662266;
+const uint64_t pipeIn = 0x66226616;
 
 namespace Rf {
 extern RF24 radio;
 
 void setup();
+bool send(rf_command *cmd);
 bool read(rf_command *cmd);
 
 };

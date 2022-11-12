@@ -67,11 +67,13 @@ void step_read_command() {
 }
 
 void loop() {
-  Serial.println("Starting");
-
   step_read_command();
   step_light();
 
+  // rf_command cmd;
+  // cmd.type  = 1;
+  // Rf::send(&cmd);
+  // delay(1000);
 
   /*car.shift(60);
   delay(1000);

@@ -52,8 +52,8 @@ void Radio::setup() {
     radio.openWritingPipe(pipeIn);  //Open a pipe for writing
 
   if (_type == RadioType::Client) {
-    // radio.openReadingPipe(1, pipeIn);  //Open a pipe for reading
-    // radio.openReadingPipe(2, pipeIn);  //Open a pipe for reading
+    radio.openReadingPipe(1, pipeIn);  //Open a pipe for reading
+    radio.openReadingPipe(2, pipeIn);  //Open a pipe for reading
     // radio.openReadingPipe(3, pipeIn);  //Open a pipe for reading
     // radio.openReadingPipe(4, pipeIn);  //Open a pipe for reading
     // radio.openReadingPipe(5, pipeIn);  //Open a pipe for reading

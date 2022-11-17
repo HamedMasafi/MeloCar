@@ -1,5 +1,3 @@
-#include "simulate.h"
-
 #ifndef COMMANDS_H
 #define COMMANDS_H
 

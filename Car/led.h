@@ -1,8 +1,6 @@
 #ifndef LED_H
 #define LED_H
 
-#include "simulate.h"
-
 #include <Adafruit_NeoPixel.h>
 
 #define NUM_LEDS 7

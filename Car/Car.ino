@@ -2,10 +2,12 @@
 #include "pins.h"
 #include "led.h"
 #include "commands.h"
-#include "rf.h"
+#include "radio.h"
 #include "car.h"
 
 Car car;
+Radio radio(Radio::RadioType::Client);
+Radio::Command cmd;
 
 void setup() {
   Serial.begin(9600);
@@ -14,7 +16,7 @@ void setup() {
   Led::set_color(255, 0, 0);
 
   car.setup();
-  Rf::setup();
+  radio.setup();
 
   Led::turn_off();
 
@@ -33,11 +35,10 @@ void step_light() {
 }
 
 void step_read_command() {
-  static rf_command cmd;
-  if (Rf::read(&cmd)) {
+  if (radio.read(&cmd)) {
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
-        car.shift(cmd.param1);
+        car.shift(cmd.param);
         break;
 
       case RF_COMMAND_START:

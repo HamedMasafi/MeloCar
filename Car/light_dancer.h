@@ -1,7 +1,6 @@
 #ifndef LIGHT_DANCER_H
 #define LIGHT_DANCER_H
 
-#include "simulate.h"
 #include <Adafruit_NeoPixel.h>
 
 class basic_light_dancer

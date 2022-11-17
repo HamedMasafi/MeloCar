@@ -3,14 +3,16 @@
 #include "avg_list.h"
 #include "utility.h"
 #include "commands.h"
-#include "rf.h"
+#include "radio.h"
 
-smooth_reader x1(120, 70);
-smooth_reader x2(1, -1);
-smooth_reader y1(-100, 100);
-smooth_reader y2(-100, 100);
+smooth_reader x1;
+smooth_reader x2;
+smooth_reader y1;
+smooth_reader y2;
 
 int x1_value, x2_value, y1_value, y2_value;
+Radio::Command cmd;
+Radio radio(Radio::RadioType::Server);
 
 void setup() {
   Serial.begin(9600);
@@ -20,47 +22,42 @@ void setup() {
   y1.attach(PIN_Y_1);
   y2.attach(PIN_Y_2);
 
-  Rf::setup();
+  radio.setup();
 }
 
-rf_command cmd;
+
 void loop() {
 
- /* if (x1.read(x1_value)) {
-    // cmd.type = RF_COMMAND_SHIF;
-    // cmd.param1 = map(x1_value, 0, 1023, 120, 70);//Utility::map(x1_value, 0, 1024, -100, 100);
-    // Serial.println(cmd.param1);
-    // Rf::send(&cmd);
+  if (x1.read(x1_value)) {
+    cmd.type = RF_COMMAND_SHIF;
+    cmd.param = Utility::map(x1_value, 0, 1024, -100, 100);
+    radio.send(&cmd);
   }
 
   if (x2.read(x2_value)) {
     if (x2_value > 10) {
       cmd.type = RF_COMMAND_START;
-      Rf::send(&cmd);
+      radio.send(&cmd);
     }
     else if (x2_value < -10) {
       cmd.type = RF_COMMAND_REVERSE;
-      Rf::send(&cmd);
+      radio.send(&cmd);
     } else {
       cmd.type = RF_COMMAND_STOP;
-      Rf::send(&cmd);
+      radio.send(&cmd);
     }
-  }*/
+  }
 
-  auto x = map(x1.read(), 0, 1023, 120, 70);
-  auto y = map(y1.read(), 0, 1023, 1, -1);
+  auto x = Utility::map(x1.read(), 0, 1024, -100, 100);
+  auto y = Utility::map(y1.read(), 0, 1024, -100, 100);
 
-  cmd.type = RF_COMMAND_SHIF;
-  cmd.param1 = x;
-  Serial.println(cmd.param1);
-  Rf::send(&cmd);
-  delay(100);
-  
   // map_t<int>(0, 0, 0, 0, 0);
   Serial.print("x=");
   Serial.print(x);
   Serial.print("\t\t");
   Serial.print("y=");
   Serial.print(y);
-  Serial.println();
-}
+  Serial.print("x=");
+
+
+

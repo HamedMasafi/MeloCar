@@ -37,10 +37,10 @@ void Car::shift(int angle)
 {
     if (angle == _lastAngle)
       return;
+    Utility::bound(60, angle, 120);
     Serial.print("Shift to");
     Serial.print(angle);
     Serial.println();
-    Utility::bound(60, angle, 120);
     servo.write(angle);
     _lastAngle = angle;
 }

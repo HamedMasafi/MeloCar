@@ -1,7 +1,5 @@
-#include "common.h"
 #include "pins.h"
 #include "led.h"
-#include "commands.h"
 #include "radio.h"
 #include "car.h"
 
@@ -11,16 +9,20 @@ Radio::Command cmd;
 
 void setup() {
   Serial.begin(9600);
-
+  while (!Serial) {}
+  
   Led::setup();
   Led::set_color(255, 0, 0);
 
   car.setup();
   radio.setup();
 
+  
   Led::turn_off();
 
   car.shift(90);
+
+  cmd.param = cmd.type = 0;
 }
 
 #define LED_SLEEP_TIME 150
@@ -36,6 +38,12 @@ void step_light() {
 
 void step_read_command() {
   if (radio.read(&cmd)) {
+        Serial.print("Command read; type = ");
+    Serial.print(cmd.type);
+    Serial.print("  ; param = ");
+    Serial.print(cmd.param);
+    Serial.println();
+    
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
         car.shift(cmd.param);
@@ -63,25 +71,10 @@ void step_read_command() {
     }
 
     cmd.type = 0;
-    delay(100);
   }
 }
 
 void loop() {
   step_read_command();
   step_light();
-
-  // rf_command cmd;
-  // cmd.type  = 1;
-  // Rf::send(&cmd);
-  // delay(1000);
-
-  /*car.shift(60);
-  delay(1000);
-
-  car.shift(90);
-  delay(1000);
-
-  car.shift(120);
-  delay(1000);*/
 }

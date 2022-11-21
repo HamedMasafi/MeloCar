@@ -6,7 +6,6 @@
 #include <RF24.h>
 
 #include "pins.h"
-#include "commands.h"
 
 const uint64_t pipeIn = 0x662266;
 

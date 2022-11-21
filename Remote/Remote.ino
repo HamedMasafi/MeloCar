@@ -3,7 +3,7 @@
 #include "radio.h"
 #include "JoystickReader.h"
 
-JoystickReader steeringWheel(PIN_H_LEFT, 0, 120);
+JoystickReader steeringWheel(PIN_H_LEFT, 70, 120);
 JoystickReader gas(PIN_V_RIGHT, -1, 1);
 
 Radio::Command cmd;
@@ -40,24 +40,17 @@ void setup() {
   Serial.println(x);
 
 void loop() {
-  // READ(PIN_V_LEFT);
-  // READ(PIN_H_LEFT);
-  // READ(PIN_V_RIGHT);
-  // READ(PIN_H_RIGHT);
-  // delay(1000);
-  // return;
-
   int tmp;
   if (steeringWheel.read(&tmp)) {
-    PRINT_X(tmp, steeringWheel);
+    PRINT_X(tmp, "steeringWheel");
     cmd.type = RF_COMMAND_SHIF;
-    cmd.param = x;  //map(x1_value, 0, 1024, -100, 100);
+    cmd.param = tmp;
     radio.send(&cmd);
     delay(90);
   }
 
   if (gas.read(&tmp)) {
-    PRINT_X(tmp, gas);
+    PRINT_X(tmp, "gas");
     if (tmp > 0) {
       cmd.type = RF_COMMAND_START;
       radio.send(&cmd);

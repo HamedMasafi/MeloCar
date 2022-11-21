@@ -1,43 +1,49 @@
+#include <stdint.h>
 #include "Arduino.h"
-#pragma once
-
-class JoystickReader {
+class JoystickReader
+{
+private:
+    uint8_t _pin;
+    int _min, _max;
+    int _lastValue{-1};
 
 public:
-  JoystickReader(uint8_t pin);
-  JoystickReader(uint8_t pin, int min, int max, int telo = 1);
-  int read();
-private:
-  uint8_t _pin;
-  int _min;
-  int _max;
+    JoystickReader(uint8_t pin, int min, int max);
+
+    int read();
+    bool read(int *n);
 };
 
-JoystickReader::JoystickReader(uint8_t pin)
-  : _pin(pin) {
-  pinMode(pin, INPUT);
-  auto avg = analogRead(pin);
-  _max = 2 * avg;
-  _min = 0;
+inline JoystickReader::JoystickReader(uint8_t pin, int min, int max)
+    : _pin(pin)
+    , _min(min)
+    , _max(max)
+{}
+
+inline int JoystickReader::read()
+{
+    auto tmp = analogRead(_pin);
+    auto mapped =  map(tmp, 0, 1023, _min, _max);
+    Serial.print("JoystickReader::read");
+    Serial.print(tmp);
+    Serial.print("=>");
+    Serial.println(mapped);
 }
 
-JoystickReader::JoystickReader(uint8_t pin, int min, int max, int telo)
-  : _pin(pin), _min(min), _max(max) {
-  pinMode(pin, INPUT);
-}
+inline bool JoystickReader::read(int *n)
+{
+    auto tmp = analogRead(_pin);
+    if (tmp == _lastValue)
+        return false;
 
-int JoystickReader::read() {
-  constexpr int max{ 666 };
+    *n = map(tmp, 0, 1023, _min, _max);
 
-  auto tmp = analogRead(_pin);
-  auto ret = map(tmp, 0, max, _min, _max);
+#ifdef DEBUG
+    Serial.print("JoystickReader::read: ");
+    Serial.print(tmp);
+    Serial.print("=>");
+    Serial.println(*n);
+#endif
 
-  // Serial.print("read(); port=");
-  // Serial.print(_pin);
-  // Serial.print(" // ");
-  // Serial.print(tmp);
-  // Serial.print("=>");
-  // Serial.print(ret);
-  // Serial.println();
-  return ret;
+    return true;
 }

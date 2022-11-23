@@ -14,6 +14,7 @@ void setup();
 void set_color(uint8_t r, uint8_t g, uint8_t b);
 void set_color(uint32_t color);
 void turn_off();
+void turn_on();
 void step();
 void change_dancer();
 

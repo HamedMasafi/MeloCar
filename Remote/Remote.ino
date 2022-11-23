@@ -3,7 +3,7 @@
 #include "radio.h"
 #include "JoystickReader.h"
 
-JoystickReader steeringWheel(PIN_H_LEFT, 70, 120);
+JoystickReader steeringWheel(PIN_H_LEFT, 120, 90);
 JoystickReader gas(PIN_V_RIGHT, -1, 1);
 
 Radio::Command cmd;
@@ -17,8 +17,10 @@ void setup() {
 
   radio.setup();
 
-  pinMode(PIN_X_1, INPUT);
-  pinMode(PIN_Y_1, INPUT);
+  pinMode(PIN_V_LEFT, INPUT);
+  pinMode(PIN_H_LEFT, INPUT);
+  pinMode(PIN_V_RIGHT, INPUT);
+  pinMode(PIN_H_RIGHT, INPUT);
 }
 
 #define READ(x) \
@@ -42,15 +44,20 @@ void setup() {
 void loop() {
   int tmp;
   if (steeringWheel.read(&tmp)) {
+#ifdef DEBUG
     PRINT_X(tmp, "steeringWheel");
+#endif
     cmd.type = RF_COMMAND_SHIF;
     cmd.param = tmp;
     radio.send(&cmd);
-    delay(90);
+    delay(100);
   }
 
   if (gas.read(&tmp)) {
+
+#ifdef DEBUG
     PRINT_X(tmp, "gas");
+#endif
     if (tmp > 0) {
       cmd.type = RF_COMMAND_START;
       radio.send(&cmd);
@@ -61,7 +68,7 @@ void loop() {
       cmd.type = RF_COMMAND_STOP;
       radio.send(&cmd);
     }
-    delay(90);
+    delay(100);
   }
 
 

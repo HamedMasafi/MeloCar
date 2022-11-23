@@ -35,6 +35,10 @@ namespace Led
         set_color(0, 0, 0);
     }
 
+    void turn_on()
+    {
+    }
+
     void step()
     {
         _dancer->step();

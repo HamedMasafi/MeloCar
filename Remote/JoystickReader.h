@@ -20,15 +20,15 @@ inline JoystickReader::JoystickReader(uint8_t pin, int min, int max)
     , _max(max)
 {}
 
-inline int JoystickReader::read()
-{
-    auto tmp = analogRead(_pin);
-    auto mapped =  map(tmp, 0, 1023, _min, _max);
-    Serial.print("JoystickReader::read");
-    Serial.print(tmp);
-    Serial.print("=>");
-    Serial.println(mapped);
-}
+// inline int JoystickReader::read()
+// {
+//     auto tmp = analogRead(_pin);
+//     auto mapped =  map(tmp, 0, 1023, _min, _max);
+//     Serial.print("JoystickReader::read");
+//     Serial.print(tmp);
+//     Serial.print("=>");
+//     Serial.println(mapped);
+// }
 
 inline bool JoystickReader::read(int *n)
 {
@@ -36,8 +36,10 @@ inline bool JoystickReader::read(int *n)
     if (tmp == _lastValue)
         return false;
 
-    *n = map(tmp, 0, 1023, _min, _max);
+    *n = map(tmp, 0, 760, _min, _max);
 
+    if (*n < 0)
+      *n = 0;
 #ifdef DEBUG
     Serial.print("JoystickReader::read: ");
     Serial.print(tmp);
@@ -45,5 +47,6 @@ inline bool JoystickReader::read(int *n)
     Serial.println(*n);
 #endif
 
+    _lastValue = tmp;
     return true;
 }

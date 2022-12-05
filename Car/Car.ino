@@ -9,7 +9,7 @@ Radio radio(Radio::RadioType::Client);
 
 void setup() {
   Serial.begin(9600);
-  while (!Serial) {}
+  // while (!Serial) {}
 
   Led::setup();
   Led::set_color(255, 0, 0);
@@ -39,30 +39,32 @@ void step_light() {
 void step_read_command() {
   Radio::Command cmd;
   if (radio.read(&cmd)) {
-    Serial.print("Command read; type = ");
-    Serial.print(cmd.type);
-    Serial.print("  ; param = ");
-    Serial.print(cmd.param);
-    Serial.println();
+    
 
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
-        car.shift(cmd.param);
+      Serial.print("Command read; type = ");
+      Serial.print(cmd.type);
+      Serial.print("  ; param = ");
+      Serial.print(cmd.param);
+      Serial.println();
+        car.shift(map(cmd.param, 0, 180, 30, 120));
+        delay(200);
         break;
 
       case RF_COMMAND_START:
         car.forward();
-        delay(90);
+        delay(200);
         break;
 
       case RF_COMMAND_REVERSE:
         car.backward();
-        delay(90);
+        delay(200);
         break;
 
       case RF_COMMAND_STOP:
         car.stop();
-        delay(90);
+        delay(200);
         break;
 
       case RF_COMMAND_SET_LED_OFF:
@@ -78,13 +80,14 @@ void step_read_command() {
         break;
     }
     cmd.type = cmd.param = 0;
+    delay(90);
   } else {
-    // Serial.println("No command");
+    Serial.println("No command");
+    delay(900);
   }
-  delay(90);
 }
 
 void loop() {
   step_read_command();
-  step_light();
+ // step_light();
 }

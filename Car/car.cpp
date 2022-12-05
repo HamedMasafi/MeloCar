@@ -37,7 +37,11 @@ void Car::shift(int angle)
 {
     if (angle == _lastAngle)
       return;
-    Utility::bound(60, angle, 120);
+    // Utility::bound(60, angle, 120);
+    // if (angle < 70)
+    //   angle = 70;
+    // else if (angle > 129)
+    //   angle = 120;
     Serial.print("Shift to");
     Serial.print(angle);
     Serial.println();

@@ -1,9 +1,11 @@
+#define DEBUG
+
 #include "pins.h"
 #include "utility.h"
 #include "radio.h"
 #include "JoystickReader.h"
 
-JoystickReader steeringWheel(PIN_H_LEFT, 120, 90);
+JoystickReader steeringWheel(PIN_H_LEFT, 120, 0);
 JoystickReader gas(PIN_V_RIGHT, -1, 1);
 
 Radio::Command cmd;
@@ -11,7 +13,7 @@ Radio radio(Radio::RadioType::Server);
 
 void setup() {
   Serial.begin(9600);
-  while (!Serial) {}
+  // while (!Serial) {}
 
   delay(900);
 
@@ -45,18 +47,19 @@ void loop() {
   int tmp;
   if (steeringWheel.read(&tmp)) {
 #ifdef DEBUG
-    PRINT_X(tmp, "steeringWheel");
+    // PRINT_X(tmp, "steeringWheel");
 #endif
     cmd.type = RF_COMMAND_SHIF;
     cmd.param = tmp;
-    radio.send(&cmd);
-    delay(100);
+    if (!radio.send(&cmd))
+      Serial.println("Unable to send command");
+    delay(30);
   }
 
   if (gas.read(&tmp)) {
 
 #ifdef DEBUG
-    PRINT_X(tmp, "gas");
+    // PRINT_X(tmp, "gas");
 #endif
     if (tmp > 0) {
       cmd.type = RF_COMMAND_START;
@@ -68,7 +71,7 @@ void loop() {
       cmd.type = RF_COMMAND_STOP;
       radio.send(&cmd);
     }
-    delay(100);
+    delay(60);
   }
 
 

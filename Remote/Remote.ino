@@ -5,7 +5,7 @@
 #include "radio.h"
 #include "JoystickReader.h"
 
-JoystickReader steeringWheel(PIN_H_LEFT, 120, 0);
+JoystickReader steeringWheel(PIN_H_LEFT, 200, 0);
 JoystickReader gas(PIN_V_RIGHT, -1, 1);
 
 Radio::Command cmd;
@@ -53,7 +53,6 @@ void loop() {
     cmd.param = tmp;
     if (!radio.send(&cmd))
       Serial.println("Unable to send command");
-    delay(30);
   }
 
   if (gas.read(&tmp)) {

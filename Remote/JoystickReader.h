@@ -40,7 +40,7 @@ inline bool JoystickReader::read(int *n)
 
     if (*n < 0)
       *n = 0;
-#ifdef DEBUG
+#ifdef DEBUG2
     Serial.print("JoystickReader::read: ");
     Serial.print(tmp);
     Serial.print("=>");

@@ -36,58 +36,52 @@ void step_light() {
   }
 }
 
+Radio::Command cmd;
 void step_read_command() {
-  Radio::Command cmd;
-  if (radio.read(&cmd)) {
-    
 
+  if (radio.read(&cmd)) {
+    Serial.print("Command read; type = ");
+    Serial.print(cmd.type);
+    Serial.print("  ; param = ");
+    Serial.print(cmd.param);
+    Serial.println();
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
-      Serial.print("Command read; type = ");
-      Serial.print(cmd.type);
-      Serial.print("  ; param = ");
-      Serial.print(cmd.param);
-      Serial.println();
-        car.shift(map(cmd.param, 0, 180, 30, 120));
-        delay(200);
+        car.shift(map(cmd.param, 0, 200, 120, 60));
         break;
 
-      case RF_COMMAND_START:
-        car.forward();
-        delay(200);
-        break;
+      // case RF_COMMAND_START:
+      //   car.forward();
+      //   break;
 
-      case RF_COMMAND_REVERSE:
-        car.backward();
-        delay(200);
-        break;
+      // case RF_COMMAND_REVERSE:
+      //   car.backward();
+      //   break;
 
-      case RF_COMMAND_STOP:
-        car.stop();
-        delay(200);
-        break;
+      // case RF_COMMAND_STOP:
+      //   car.stop();
+      //   break;
 
-      case RF_COMMAND_SET_LED_OFF:
-        Led::turn_off();
-        break;
+      // case RF_COMMAND_SET_LED_OFF:
+      //   Led::turn_off();
+      //   break;
         
-      case RF_COMMAND_SET_LED_ON:
-        Led::turn_on();
-        break;
+      // case RF_COMMAND_SET_LED_ON:
+      //   Led::turn_on();
+      //   break;
 
-      case RF_COMMAND_SET_LED_CHANGE_DANCER:
-        Led::change_dancer();
-        break;
+      // case RF_COMMAND_SET_LED_CHANGE_DANCER:
+      //   Led::change_dancer();
+      //   break;
     }
     cmd.type = cmd.param = 0;
-    delay(90);
   } else {
-    Serial.println("No command");
-    delay(900);
+    // Serial.println("No command");
   }
 }
 
 void loop() {
   step_read_command();
  // step_light();
+ delay(30);
 }

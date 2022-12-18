@@ -6,7 +6,7 @@
 #include "JoystickReader.h"
 
 JoystickReader steeringWheel(PIN_H_LEFT, 200, 0);
-JoystickReader gas(PIN_V_RIGHT, -1, 1);
+JoystickReader gas(PIN_V_RIGHT, 3, -3);
 
 Radio::Command cmd;
 Radio radio(Radio::RadioType::Server);
@@ -47,7 +47,7 @@ void loop() {
   int tmp;
   if (steeringWheel.read(&tmp)) {
 #ifdef DEBUG
-    // PRINT_X(tmp, "steeringWheel");
+    Utility::print_impl("Gas: ", tmp);
 #endif
     cmd.type = RF_COMMAND_SHIF;
     cmd.param = tmp;
@@ -58,19 +58,17 @@ void loop() {
   if (gas.read(&tmp)) {
 
 #ifdef DEBUG
-    // PRINT_X(tmp, "gas");
+    // Utility::print_impl("Gas: ", tmp);
 #endif
     if (tmp > 0) {
       cmd.type = RF_COMMAND_START;
-      radio.send(&cmd);
     } else if (tmp < 0) {
       cmd.type = RF_COMMAND_REVERSE;
-      radio.send(&cmd);
     } else {
       cmd.type = RF_COMMAND_STOP;
-      radio.send(&cmd);
     }
-    delay(60);
+    
+    radio.send(&cmd);
   }
 
 

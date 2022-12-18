@@ -2,6 +2,7 @@
 #include "led.h"
 #include "radio.h"
 #include "car.h"
+#include "utility.h"
 
 Car car;
 Radio radio(Radio::RadioType::Client);
@@ -40,39 +41,35 @@ Radio::Command cmd;
 void step_read_command() {
 
   if (radio.read(&cmd)) {
-    Serial.print("Command read; type = ");
-    Serial.print(cmd.type);
-    Serial.print("  ; param = ");
-    Serial.print(cmd.param);
-    Serial.println();
+      Utility::print("Data freom nrf is: type= ", cmd.type, " value=", cmd.param);
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
         car.shift(map(cmd.param, 0, 200, 120, 60));
         break;
 
-      // case RF_COMMAND_START:
-      //   car.forward();
-      //   break;
+      case RF_COMMAND_START:
+        car.forward();
+        break;
 
-      // case RF_COMMAND_REVERSE:
-      //   car.backward();
-      //   break;
+      case RF_COMMAND_REVERSE:
+        car.backward();
+        break;
 
-      // case RF_COMMAND_STOP:
-      //   car.stop();
-      //   break;
+      case RF_COMMAND_STOP:
+        car.stop();
+        break;
 
-      // case RF_COMMAND_SET_LED_OFF:
-      //   Led::turn_off();
-      //   break;
-        
-      // case RF_COMMAND_SET_LED_ON:
-      //   Led::turn_on();
-      //   break;
+      case RF_COMMAND_SET_LED_OFF:
+        Led::turn_off();
+        break;
 
-      // case RF_COMMAND_SET_LED_CHANGE_DANCER:
-      //   Led::change_dancer();
-      //   break;
+      case RF_COMMAND_SET_LED_ON:
+        Led::turn_on();
+        break;
+
+      case RF_COMMAND_SET_LED_CHANGE_DANCER:
+        Led::change_dancer();
+        break;
     }
     cmd.type = cmd.param = 0;
   } else {
@@ -82,6 +79,6 @@ void step_read_command() {
 
 void loop() {
   step_read_command();
- // step_light();
- delay(30);
+  // step_light();
+  delay(30);
 }

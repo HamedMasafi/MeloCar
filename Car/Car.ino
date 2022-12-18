@@ -22,7 +22,7 @@ void setup() {
   Led::turn_off();
 
   car.shift(90);
-
+  delay(300);
   // cmd.param = cmd.type = 0;
 }
 
@@ -41,7 +41,8 @@ Radio::Command cmd;
 void step_read_command() {
 
   if (radio.read(&cmd)) {
-      Utility::print("Data freom nrf is: type= ", cmd.type, " value=", cmd.param);
+    Utility::print("Data freom nrf is: type= ", cmd.type, " value=", cmd.param);
+    delay(30);
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
         car.shift(map(cmd.param, 0, 200, 120, 60));
@@ -80,5 +81,5 @@ void step_read_command() {
 void loop() {
   step_read_command();
   // step_light();
-  delay(30);
+  delay(90);
 }

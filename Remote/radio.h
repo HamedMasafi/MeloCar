@@ -32,8 +32,8 @@ public:
     Client
   };
   struct Command {
-    uint16_t type;
-    uint16_t param;
+    int type;
+    int param;
   };
   Radio(RadioType type, int ce = PIN_CE, int csn = PIN_CSN);
 

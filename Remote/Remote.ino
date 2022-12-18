@@ -44,25 +44,23 @@ void setup() {
   Serial.println(x);
 
 void loop() {
-  int tmp;
-  if (steeringWheel.read(&tmp)) {
-#ifdef DEBUG
-    Utility::print_impl("Gas: ", tmp);
-#endif
+  int wheel, g;
+  if (steeringWheel.read(&wheel)) {
+
     cmd.type = RF_COMMAND_SHIF;
-    cmd.param = tmp;
+    cmd.param = wheel;
     if (!radio.send(&cmd))
       Serial.println("Unable to send command");
   }
 
-  if (gas.read(&tmp)) {
+  if (gas.read(&g)) {
 
 #ifdef DEBUG
     // Utility::print_impl("Gas: ", tmp);
 #endif
-    if (tmp > 0) {
+    if (g > 0) {
       cmd.type = RF_COMMAND_START;
-    } else if (tmp < 0) {
+    } else if (g < 0) {
       cmd.type = RF_COMMAND_REVERSE;
     } else {
       cmd.type = RF_COMMAND_STOP;
@@ -71,7 +69,9 @@ void loop() {
     radio.send(&cmd);
   }
 
-
+#ifdef DEBUG
+    Utility::print_impl("Wheel: ", wheel, " gas:", g);
+#endif
   // Serial.print("x1=");
   // Serial.print(x);
   // Serial.print("\t\t");

@@ -32,8 +32,8 @@ public:
     Client
   };
   struct Command {
-    uint16_t type;
-    uint16_t param;
+    int type;
+    int param;
   };
   Radio(RadioType type, int ce = PIN_CE, int csn = PIN_CSN);
 
@@ -94,7 +94,7 @@ bool Radio::send(Command *cmd) {
 }
 bool Radio::read(Command *cmd) {
   if (radio.available()) {
-    auto len = radio.getPayloadSize();
+    //auto len = radio.getPayloadSize();
     // if (len != sizeof(Command)) {
     //   radio.read(0, 0);
     //   return false;

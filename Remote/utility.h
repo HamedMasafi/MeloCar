@@ -22,6 +22,8 @@ void print_impl(First f, Types... others)
   Serial.print(f);
   if constexpr (sizeof...(Types))
     print_impl(others...);
+  else
+    Serial.println();
 }
 
 template<typename... Types>

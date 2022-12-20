@@ -1,3 +1,4 @@
+#include "utility.h"
 #include <stdint.h>
 #include "Arduino.h"
 class JoystickReader
@@ -38,20 +39,17 @@ inline bool JoystickReader::read(int *n)
 {
     auto tmp = analogRead(_pin);
 
-    *n = map(tmp, 0, 760, _min, _max);
+    *n = map(tmp, 0, 1023, _min, _max);
 
     if (*n < _r_min)
        *n = _r_min;
     if (*n > _r_max)
        *n = _r_max;
-#ifdef DEBUG3
-    Serial.print("JoystickReader::read: ");
-    Serial.print(tmp);
-    Serial.print("=>");
-    Serial.println(*n);
-#endif
 
-    if (tmp == *n)
+    Utility::print("JoystickReader::read: ", tmp, "=>", *n);
+
+
+    if (*n == _lastValue)
         return false;
     _lastValue = *n;
     return true;

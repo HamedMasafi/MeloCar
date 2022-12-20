@@ -19,34 +19,30 @@ void Car::forward()
 {
     digitalWrite(PIN_MOTOR_1, LOW);
     digitalWrite(PIN_MOTOR_2, HIGH);
-    delay(100);
 }
 
 void Car::stop()
 {
     digitalWrite(PIN_MOTOR_1, LOW);
     digitalWrite(PIN_MOTOR_2, LOW);
-    delay(100);
 }
 
 void Car::backward() 
 {
     digitalWrite(PIN_MOTOR_1, HIGH);
     digitalWrite(PIN_MOTOR_2, LOW);
-    delay(100);
 }
 
 void Car::shift(int angle)
 {
-    if (angle == _lastAngle)
-      return;
+    // if (angle == _lastAngle)
+      // return;
     // Utility::bound(60, angle, 120);
     // if (angle < 50)
     //   angle = 50;
     // else if (angle > 129)
     //   angle = 120;
-    Serial.print("Shift to ");
-    Serial.println(angle);
+    Utility::print("Shift to ", angle);
     servo.write(angle);
     _lastAngle = angle;
 }

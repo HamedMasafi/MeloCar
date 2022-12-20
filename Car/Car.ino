@@ -41,8 +41,9 @@ Radio::Command cmd;
 void step_read_command() {
 
   if (radio.read(&cmd)) {
-    Utility::print("Data freom nrf is: type= ", cmd.type, " value=", cmd.param);
-    delay(30);
+    if (cmd.type == RF_COMMAND_SHIF)
+      Utility::print("Data freom nrf is: type= ", cmd.type, " value=", cmd.param);
+
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
         car.shift(map(cmd.param, 0, 200, 120, 60));

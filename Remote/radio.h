@@ -8,7 +8,7 @@
 #include "pins.h"
 
 //const uint64_t pipeIn = 0x662266;
-uint8_t pipeIn[6] = "MLCAR";
+uint8_t pipeIn[6] = "MELCAR";
 
 #define RF_COMMAND_SHIF 10
 #define RF_COMMAND_START 20
@@ -68,7 +68,7 @@ void Radio::setup() {
     // radio.openReadingPipe(4, pipeIn);  //Open a pipe for reading
     // radio.openReadingPipe(5, pipeIn);  //Open a pipe for reading
   }
-  radio.setAutoAck(false);  // Ensure autoACK is enabled
+  radio.setAutoAck(true);  // Ensure autoACK is enabled
   // radio.setChannel(108);          // Set RF communication channel.
   radio.setPALevel(RF24_PA_MIN);  //translate to: RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_MED=-6dBM, and RF24_PA_HIGH=0dBm.
   // radio.enableDynamicPayloads();  //This way you don't always have to send large packets just to send them once in a while. This enables dynamic payloads on ALL pipes.

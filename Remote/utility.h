@@ -29,7 +29,6 @@ void print_impl(First f, Types... others)
 template<typename... Types>
 void print(const Types &...args) {
   print_impl(args...);
-  Serial.println();
 }
 
 };

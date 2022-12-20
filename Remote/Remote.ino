@@ -6,7 +6,7 @@
 #include "JoystickReader.h"
 
 JoystickReader steeringWheel(PIN_H_LEFT, 200, 0);
-JoystickReader gas(PIN_V_RIGHT, 3, -3);
+JoystickReader gas(PIN_V_RIGHT, 3, -2);
 
 Radio::Command cmd;
 Radio radio(Radio::RadioType::Server);
@@ -49,11 +49,11 @@ void loop() {
 
     cmd.type = RF_COMMAND_SHIF;
     cmd.param = wheel;
-    if (!radio.send(&cmd))
-      Serial.println("Unable to send command");
+    radio.send(&cmd);
+      // Serial.println("Unable to send command");
   }
 
-  if (gas.read(&g)) {
+  /*if (gas.read(&g)) {
 
 #ifdef DEBUG
     // Utility::print_impl("Gas: ", tmp);
@@ -67,10 +67,11 @@ void loop() {
     }
     
     radio.send(&cmd);
-  }
+  }*/
+  delay(600);
 
 #ifdef DEBUG
-    Utility::print_impl("Wheel: ", wheel, " gas:", g);
+    // Utility::print_impl("Wheel: ", wheel, " gas:", g);
 #endif
   // Serial.print("x1=");
   // Serial.print(x);

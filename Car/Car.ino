@@ -6,25 +6,7 @@
 
 Car car;
 Radio radio(Radio::RadioType::Client);
-// Radio::Command cmd;
-
-void setup() {
-  Serial.begin(9600);
-  // while (!Serial) {}
-
-  Led::setup();
-  Led::set_color(255, 0, 0);
-
-  car.setup();
-  radio.setup();
-
-
-  Led::turn_off();
-
-  car.shift(90);
-  delay(300);
-  // cmd.param = cmd.type = 0;
-}
+Radio::Command cmd;
 
 #define LED_SLEEP_TIME 150
 
@@ -37,12 +19,11 @@ void step_light() {
   }
 }
 
-Radio::Command cmd;
 void step_read_command() {
 
   if (radio.read(&cmd)) {
-    if (cmd.type == RF_COMMAND_SHIF)
-      Utility::print("Data freom nrf is: type= ", cmd.type, " value=", cmd.param);
+    // if (cmd.type != RF_COMMAND_SHIF)
+    // Utility::print("Data freom nrf is: type= ", cmd.type, " value=", cmd.param);
 
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
@@ -75,8 +56,25 @@ void step_read_command() {
     }
     cmd.type = cmd.param = 0;
   } else {
-    // Serial.println("No command");
+    //  Utility::print("No command");
   }
+}
+
+void setup() {
+  Serial.begin(9600);
+
+  // Led::setup();
+  // Led::set_color(255, 0, 0);
+
+  car.setup();
+  radio.setup();
+
+  // Led::turn_off();
+
+  delay(1000);
+  car.shift(90);
+  delay(2000);
+  // cmd.param = cmd.type = 0;
 }
 
 void loop() {

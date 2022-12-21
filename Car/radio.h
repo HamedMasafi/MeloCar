@@ -88,10 +88,10 @@ void Radio::setup() {
   Utility::print("Connected to NRF successfuly; payload size=", sizeof(Command));
 }
 
-bool Radio::send(Command *cmd) {
+inline bool Radio::send(Command *cmd) {
   return radio.write(cmd, sizeof(Command));
 }
-bool Radio::read(Command *cmd) {
+inline bool Radio::read(Command *cmd) {
   if (radio.available()) {
     //auto len = radio.getPayloadSize();
     // if (len != sizeof(Command)) {

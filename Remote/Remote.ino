@@ -6,7 +6,7 @@
 #include "JoystickReader.h"
 
 JoystickReader steeringWheel(PIN_H_LEFT, 200, 0);
-JoystickReader gas(PIN_V_RIGHT, 3, -2);
+JoystickReader gas(PIN_V_RIGHT, 2, -1);
 
 Radio::Command cmd;
 Radio radio(Radio::RadioType::Server);
@@ -25,24 +25,6 @@ void setup() {
   pinMode(PIN_H_RIGHT, INPUT);
 }
 
-#define READ(x) \
-  Serial.print("Read from:"); \
-  Serial.print(x); \
-  Serial.print("("); \
-  Serial.print(#x); \
-  Serial.print(")="); \
-  Serial.println(analogRead(x));
-
-#define PRINT(x) \
-  Serial.print(#x); \
-  Serial.print("="); \
-  Serial.println(x);
-
-#define PRINT_X(x, title) \
-  Serial.print(title); \
-  Serial.print("="); \
-  Serial.println(x);
-
 void loop() {
   int wheel, g;
   if (steeringWheel.read(&wheel)) {
@@ -50,28 +32,30 @@ void loop() {
     cmd.type = RF_COMMAND_SHIF;
     cmd.param = wheel;
     radio.send(&cmd);
-      // Serial.println("Unable to send command");
+    // Serial.println("Unable to send command");
   }
 
-  /*if (gas.read(&g)) {
-
-#ifdef DEBUG
-    // Utility::print_impl("Gas: ", tmp);
-#endif
-    if (g > 0) {
-      cmd.type = RF_COMMAND_START;
-    } else if (g < 0) {
-      cmd.type = RF_COMMAND_REVERSE;
-    } else {
-      cmd.type = RF_COMMAND_STOP;
+  if (gas.read(&g)) {
+    Utility::print("gas is", g);
+    switch (g) {
+      case 2:
+        cmd.type = RF_COMMAND_START;
+        break;
+      case 0:
+        cmd.type = RF_COMMAND_REVERSE;
+        break;
+      default:
+        cmd.type = RF_COMMAND_STOP;
+        break;
     }
-    
+
     radio.send(&cmd);
-  }*/
-  delay(600);
+  }
+
+  delay(30);
 
 #ifdef DEBUG
-    // Utility::print_impl("Wheel: ", wheel, " gas:", g);
+  // Utility::print_impl("Wheel: ", wheel, " gas:", g);
 #endif
   // Serial.print("x1=");
   // Serial.print(x);

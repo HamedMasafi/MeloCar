@@ -31,4 +31,11 @@ void print(const Types &...args) {
   print_impl(args...);
 }
 
+
+void fatal(const char *msg) {
+  Serial.print("FATAL: ");
+  Serial.println(msg);
+  while (1) {}
+}
+
 };

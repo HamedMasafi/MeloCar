@@ -10,21 +10,6 @@
 //const uint64_t pipeIn = 0x662266;
 uint8_t pipeIn[6] = "MELCAR";
 
-#define RF_COMMAND_SHIF 10
-#define RF_COMMAND_START 20
-#define RF_COMMAND_REVERSE 30
-#define RF_COMMAND_STOP 40
-#define RF_COMMAND_SET_LED_BRIGHTNESS 50
-#define RF_COMMAND_SET_LED_ON 60
-#define RF_COMMAND_SET_LED_OFF 70
-#define RF_COMMAND_SET_LED_CHANGE_DANCER 80
-
-void fatal(const char *msg) {
-  Serial.print("FATAL: ");
-  Serial.println(msg);
-  while (1) {}
-}
-
 class Radio {
 public:
   enum class RadioType {
@@ -32,8 +17,12 @@ public:
     Client
   };
   struct Command {
-    int type;
-    int param;
+    int left_v;
+    int left_h;
+    int right_v;
+    int right_h;
+    int extra_1;
+    int extra_2;
   };
   Radio(RadioType type, int ce = PIN_CE, int csn = PIN_CSN);
 
@@ -53,7 +42,7 @@ Radio::Radio(RadioType type, int ce, int csn)
 
 void Radio::setup() {
   if (!radio.begin()) {
-    fatal("Unable to connect to NRF");
+    Utility::fatal("Unable to connect to NRF");
   }
 
   radio.setDataRate(RF24_1MBPS);  //speed  RF24_250KBPS for 250kbs, RF24_1MBPS for 1Mbps, or RF24_2MBPS for 2Mbps

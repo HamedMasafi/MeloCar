@@ -23,6 +23,14 @@ void print(const Types &...args) {
   print_impl(args...);
   Serial.println();
 }
+
+
+void fatal(const char *msg) {
+  Serial.print("FATAL: ");
+  Serial.println(msg);
+  while (1) {}
+}
+
 };
 
 #endif  // UTILITY_H

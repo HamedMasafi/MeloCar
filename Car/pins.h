@@ -1,7 +1,7 @@
 #pragma once
 
-#define PIN_CE      3
-#define PIN_CSN     2
+#define PIN_CE      8
+#define PIN_CSN     10
 
 #define PIN_MOTOR_1 6
 #define PIN_MOTOR_2 7

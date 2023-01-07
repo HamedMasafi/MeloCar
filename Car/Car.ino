@@ -22,8 +22,8 @@ void step_light() {
 void step_read_command() {
   if (radio.read(&cmd)) {
     // if (cmd.type != RF_COMMAND_SHIF)
-    Utility::print("Data freom nrf is: type= ", cmd.type, " value=", cmd.param);
-
+    Utility::print("Data freom nrf is: lh= ", cmd.left_h, " value=", cmd.right_h);
+/*
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
         car.shift(map(cmd.param, 0, 200, 120, 60));
@@ -50,7 +50,9 @@ void step_read_command() {
         Led::change_dancer();
         break;
     }
+
     cmd.type = cmd.param = 0;
+    */
   } else {
     //  Utility::print("No command");
   }

@@ -16,42 +16,46 @@ void setup() {
   // while (!Serial) {}
 
   delay(900);
-
   radio.setup();
 
   pinMode(PIN_V_LEFT, INPUT);
   pinMode(PIN_H_LEFT, INPUT);
   pinMode(PIN_V_RIGHT, INPUT);
   pinMode(PIN_H_RIGHT, INPUT);
+  // delay(900);
 }
 
 void loop() {
   int wheel, g;
+  cmd.wheel = steeringWheel.read();
+ 
   if (steeringWheel.read(&wheel)) {
 
     cmd.type = RF_COMMAND_SHIF;
     cmd.param = wheel;
-    radio.send(&cmd);
-    // Serial.println("Unable to send command");
+    if (!radio.send(&cmd))
+      Utility::print("Unable to send command");
   }
 
   if (gas.read(&g)) {
-    Utility::print("gas is", g);
+    cmd.type = RF_COMMAND_GAS;
     switch (g) {
       case 2:
-        cmd.type = RF_COMMAND_START;
+        cmd.param = RF_GAS_PARAM_START;
         break;
       case 0:
-        cmd.type = RF_COMMAND_REVERSE;
+        cmd.param = RF_GAS_PARAM_REVERSE;
         break;
       default:
-        cmd.type = RF_COMMAND_STOP;
+        cmd.param = RF_GAS_PARAM_STOP;
         break;
     }
 
-    radio.send(&cmd);
+    if (!radio.send(&cmd))
+      Utility::print("Unable to send command");
   }
 
+  Utility::print("wheel is: ", wheel, " ;  gas is: ", g);
   delay(30);
 
 #ifdef DEBUG

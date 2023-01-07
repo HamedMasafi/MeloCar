@@ -20,26 +20,22 @@ void step_light() {
 }
 
 void step_read_command() {
-
   if (radio.read(&cmd)) {
     // if (cmd.type != RF_COMMAND_SHIF)
-    // Utility::print("Data freom nrf is: type= ", cmd.type, " value=", cmd.param);
+    Utility::print("Data freom nrf is: type= ", cmd.type, " value=", cmd.param);
 
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
         car.shift(map(cmd.param, 0, 200, 120, 60));
         break;
 
-      case RF_COMMAND_START:
-        car.forward();
-        break;
-
-      case RF_COMMAND_REVERSE:
-        car.backward();
-        break;
-
-      case RF_COMMAND_STOP:
-        car.stop();
+      case RF_COMMAND_GAS:
+        if (cmd.param == RF_GAS_PARAM_START)
+          car.forward();
+        else if (cmd.param == RF_GAS_PARAM_REVERSE)
+          car.backward();
+        else
+          car.stop();
         break;
 
       case RF_COMMAND_SET_LED_OFF:
@@ -62,7 +58,7 @@ void step_read_command() {
 
 void setup() {
   Serial.begin(9600);
-
+  Utility::print("Starting");
   // Led::setup();
   // Led::set_color(255, 0, 0);
 
@@ -71,10 +67,11 @@ void setup() {
 
   // Led::turn_off();
 
-  delay(1000);
+  delay(200);
   car.shift(90);
-  delay(2000);
   // cmd.param = cmd.type = 0;
+  
+  Utility::print("Start...");  
 }
 
 void loop() {

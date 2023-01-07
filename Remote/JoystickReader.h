@@ -11,7 +11,7 @@ private:
 public:
   JoystickReader(uint8_t pin, int min, int max);
 
-  int read();
+  int read(int *buffer = nullptr);
   bool read(int *n, bool print_details = false);
 };
 
@@ -21,25 +21,23 @@ inline JoystickReader::JoystickReader(uint8_t pin, int min, int max)
   _r_max = max(_min, _max);
 }
 
-// inline int JoystickReader::read()
-// {
-//     auto tmp = analogRead(_pin);
-//     auto mapped =  map(tmp, 0, 1023, _min, _max);
-//     Serial.print("JoystickReader::read");
-//     Serial.print(tmp);
-//     Serial.print("=>");
-//     Serial.println(mapped);
-// }
+inline int JoystickReader::read(int *buffer) {
+  auto tmp = analogRead(_pin);
+  auto mapped = map(tmp, 0, 1023, _min, _max);
+
+  if (mapped < _r_min)
+    mapped = _r_min;
+  if (mapped > _r_max)
+    mapped = _r_max;
+
+  if (buffer)
+    *buffer = tmp;
+  return mapped;
+}
 
 inline bool JoystickReader::read(int *n, bool print_details) {
-  auto tmp = analogRead(_pin);
-
-  *n = map(tmp, 0, 1023, _min, _max);
-
-  if (*n < _r_min)
-    *n = _r_min;
-  if (*n > _r_max)
-    *n = _r_max;
+  int tmp;
+  *n = read(&tmp);
 
   if (print_details)
     Utility::print("JoystickReader::read: ", tmp, "=>", *n);

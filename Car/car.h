@@ -1,7 +1,7 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
-#include <Servo.h>
+// #include <Servo.h>
 #include <SPI.h>
 #include <Arduino.h>
 
@@ -9,7 +9,7 @@
 #include "pins.h"
 
 class Car {
-  Servo servo;
+  // Servo servo;
   int _lastAngle{ -1 };
 
 public:
@@ -23,9 +23,9 @@ public:
 inline void Car::setup() {
   pinMode(PIN_MOTOR_1, OUTPUT);
   pinMode(PIN_MOTOR_2, OUTPUT);
-  pinMode(PIN_SERVO, OUTPUT);
+  // pinMode(PIN_SERVO, OUTPUT);
 
-  servo.attach(PIN_SERVO);
+  // servo.attach(PIN_SERVO);
 }
 
 inline void Car::forward() {
@@ -58,7 +58,7 @@ inline void Car::shift(int angle) {
   // else if (angle > 129)
   //   angle = 120;
   Utility::print("Shift to ", angle);
-  servo.write(angle);
+  // servo.write(angle);
   delay(15);
   _lastAngle = angle;
 }

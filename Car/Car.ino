@@ -3,7 +3,9 @@
 #include "radio.h"
 #include "car.h"
 #include "utility.h"
+#include "SoftwareServo.h"
 
+SoftwareServo servo;
 Car car;
 Radio radio(Radio::RadioType::Client);
 Radio::Command cmd;
@@ -21,9 +23,24 @@ void step_light() {
 
 void step_read_command() {
   if (radio.read(&cmd)) {
+    int wheel = map(cmd.left_h, 0, 1023, 60, 120);
+    int gas = map(cmd.right_v, 0, 1023, 0, 2);
     // if (cmd.type != RF_COMMAND_SHIF)
-    Utility::print("Data freom nrf is: lh= ", cmd.left_h, " value=", cmd.right_h);
-/*
+    Utility::print("Data freom nrf is: lh= ", cmd.right_v, " value=", gas);
+    // car.shift(wheel);
+    servo.write(wheel);
+    switch (gas) {
+      case 0:
+        car.forward();
+        break;
+      case 1:
+        car.stop();
+        break;
+      case 2:
+        car.backward();
+        break;
+    }
+    /*
     switch (cmd.type) {
       case RF_COMMAND_SHIF:
         car.shift(map(cmd.param, 0, 200, 120, 60));
@@ -61,23 +78,24 @@ void step_read_command() {
 void setup() {
   Serial.begin(9600);
   Utility::print("Starting");
-  // Led::setup();
-  // Led::set_color(255, 0, 0);
+  Led::setup();
+  Led::set_color(255, 0, 0);
 
   car.setup();
   radio.setup();
 
-  // Led::turn_off();
 
   delay(200);
   car.shift(90);
   // cmd.param = cmd.type = 0;
-  
-  Utility::print("Start...");  
+
+  servo.attach(PIN_SERVO);
+  Utility::print("Start...");
+  Led::turn_off();
 }
 
 void loop() {
   step_read_command();
-  // step_light();
+  step_light();
   delay(90);
 }

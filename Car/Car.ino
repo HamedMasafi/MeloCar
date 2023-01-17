@@ -3,9 +3,7 @@
 #include "radio.h"
 #include "car.h"
 #include "utility.h"
-#include "SoftwareServo.h"
 
-SoftwareServo servo;
 Car car;
 Radio radio(Radio::RadioType::Client);
 Radio::Command cmd;
@@ -27,8 +25,8 @@ void step_read_command() {
     int gas = map(cmd.right_v, 0, 1023, 0, 2);
     // if (cmd.type != RF_COMMAND_SHIF)
     Utility::print("Data freom nrf is: lh= ", cmd.right_v, " value=", gas);
-    // car.shift(wheel);
-    servo.write(wheel);
+    car.shift(wheel);
+
     switch (gas) {
       case 0:
         car.forward();
@@ -89,7 +87,6 @@ void setup() {
   car.shift(90);
   // cmd.param = cmd.type = 0;
 
-  servo.attach(PIN_SERVO);
   Utility::print("Start...");
   Led::turn_off();
 }
@@ -97,5 +94,5 @@ void setup() {
 void loop() {
   step_read_command();
   step_light();
-  delay(90);
+  delay(15);
 }

@@ -14,7 +14,11 @@ public:
     if (on == _isOn)
       return;
 
-    digitalWrite(_port, on ? HIGH : LOW);
+    //digitalWrite(_port, on ? HIGH : LOW);
+    if (on)
+      tone(_port, 1000);
+    else
+      noTone(_port);
     _isOn = on;
   }
 private:

@@ -4,11 +4,13 @@
 #include "car.h"
 #include "utility.h"
 #include "SoftwareServo.h"
+#include "beep.h"
 
 SoftwareServo servo;
 Car car;
 Radio radio(Radio::RadioType::Client);
 Radio::Command cmd;
+Beep beep{PIN_BEEP};
 
 #define LED_SLEEP_TIME 150
 
@@ -25,9 +27,12 @@ void step_read_command() {
   if (radio.read(&cmd)) {
     int wheel = map(cmd.left_h, 0, 1023, 60, 120);
     int gas = map(cmd.right_v, 0, 1023, 0, 2);
+    int horn = map(cmd.left_v, 0, 1023, 0, 2);
     // if (cmd.type != RF_COMMAND_SHIF)
     Utility::print("Data freom nrf is: lh= ", cmd.right_v, " value=", gas);
     // car.shift(wheel);
+
+    beep.toggle(horn);
     servo.write(wheel);
     switch (gas) {
       case 0:

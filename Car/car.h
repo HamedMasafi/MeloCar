@@ -8,7 +8,6 @@
 #include "pins.h"
 
 class Car {
-
 public:
   enum class Status {
     Stopped,

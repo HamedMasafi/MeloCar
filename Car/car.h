@@ -1,5 +1,4 @@
-#ifndef MOTOR_H
-#define MOTOR_H
+#pragma once
 
 #include <Servo.h>
 #include <SPI.h>
@@ -9,12 +8,13 @@
 #include "pins.h"
 
 class Car {
-  Servo servo;
-  int _lastAngle{ -1 };
-  int _realAccel{0};
-  int _goalAccel{0};
 
 public:
+  enum class Status {
+    Stopped,
+    Forward,
+    Backward
+  };
   void setup();
   void forward();
   void stop();
@@ -22,35 +22,55 @@ public:
   void shift(int angle);
   void setAccel(int accel);
   bool stepAccel();
+  void setStatus(Status status);
+
+private:
+  Servo servo;
+  Status _status{Status::Stopped};
+  int _lastAngle{ -1 };
+  int _realAccel{ 0 };
+  int _goalAccel{ 0 };
 };
 
 inline void Car::setup() {
   pinMode(PIN_MOTOR_1, OUTPUT);
   pinMode(PIN_MOTOR_2, OUTPUT);
   pinMode(PIN_SERVO, OUTPUT);
+  pinMode(PIN_ACCEL, OUTPUT);
 
   servo.attach(PIN_SERVO);
 }
 
 inline void Car::forward() {
-  digitalWrite(PIN_MOTOR_1, LOW);
-  delay(15);
-  digitalWrite(PIN_MOTOR_2, HIGH);
-  delay(15);
+  setStatus(Status::Forward);
 }
 
 inline void Car::stop() {
-  digitalWrite(PIN_MOTOR_1, LOW);
-  delay(15);
-  digitalWrite(PIN_MOTOR_2, LOW);
-  delay(15);
+  setStatus(Status::Stopped);
 }
 
 inline void Car::backward() {
-  digitalWrite(PIN_MOTOR_2, LOW);
-  delay(15);
-  digitalWrite(PIN_MOTOR_1, HIGH);
-  delay(15);
+  setStatus(Status::Backward);
+}
+
+inline void Car::setStatus(Status status) {
+  if (status == _status)
+    return;
+  switch (status) {
+    case Car::Status::Stopped:
+      digitalWrite(PIN_MOTOR_1, LOW);
+      digitalWrite(PIN_MOTOR_2, LOW);
+      break;
+    case Car::Status::Forward:
+      digitalWrite(PIN_MOTOR_1, LOW);
+      digitalWrite(PIN_MOTOR_2, HIGH);
+      break;
+    case Car::Status::Backward:
+      digitalWrite(PIN_MOTOR_1, HIGH);
+      digitalWrite(PIN_MOTOR_2, LOW);
+      break;
+  }
+  _status = status;
 }
 
 inline void Car::shift(int angle) {
@@ -66,20 +86,18 @@ inline void Car::shift(int angle) {
   _lastAngle = angle;
 }
 
-inline void Car::setAccel(int accel)
-{
+inline void Car::setAccel(int accel) {
   _goalAccel = accel;
 }
 
 
-inline bool Car::stepAccel()
-{
+inline bool Car::stepAccel() {
   if (_goalAccel > _realAccel) {
     _realAccel++;
     analogWrite(PIN_ACCEL, _realAccel);
     return true;
   }
-  
+
   if (_goalAccel < _realAccel) {
     _realAccel--;
     analogWrite(PIN_ACCEL, _realAccel);
@@ -88,5 +106,3 @@ inline bool Car::stepAccel()
 
   return false;
 }
-
-#endif  // MOTOR_H

@@ -24,7 +24,7 @@ void step_light() {
 void step_read_command() {
   if (radio.read(&cmd)) {
     int wheel = map(cmd.left_h, 0, 1023, 60, 120);
-    Utility::print("Data freom nrf is: lh= ", cmd.right_v, " value=", cmd.left_h);
+ 
     
     // wheel
     car.shift(wheel);
@@ -33,17 +33,15 @@ void step_read_command() {
     beep.toggle(cmd.left_v < 10);
 
     // engine
-    if (cmd.right_v > 600) {
-      auto accel = map(cmd.right_v, 600, 1023, 0, 255);
+ 
       car.setAccel(accel);
       car.backward();
-    } else if (cmd.right_v < 500) {
-      auto accel = map(cmd.right_v, 0, 500, 0, 255);
+ 
       car.setAccel(accel);
       car.forward();
     } else {
       car.stop();
-    }
+ 
 
     /*
     switch (cmd.type) {
@@ -103,4 +101,3 @@ void loop() {
   step_light();
   car.stepAccel();
   delay(15);
-}

@@ -58,15 +58,21 @@ inline void Car::setStatus(Status status) {
   switch (status) {
     case Car::Status::Stopped:
       digitalWrite(PIN_MOTOR_1, LOW);
+      delay(15);
       digitalWrite(PIN_MOTOR_2, LOW);
+      delay(15);
       break;
     case Car::Status::Forward:
       digitalWrite(PIN_MOTOR_1, LOW);
+      delay(15);
       digitalWrite(PIN_MOTOR_2, HIGH);
+      delay(15);
       break;
     case Car::Status::Backward:
       digitalWrite(PIN_MOTOR_1, HIGH);
+      delay(15);
       digitalWrite(PIN_MOTOR_2, LOW);
+      delay(15);
       break;
   }
   _status = status;

@@ -75,6 +75,7 @@ inline void Car::setStatus(Status status) {
       delay(15);
       break;
   }
+  delay(90);
   _status = status;
 }
 

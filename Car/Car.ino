@@ -12,6 +12,9 @@ Beep beep{PIN_BEEP};
 
 #define LED_SLEEP_TIME 150
 
+constexpr int accel_min{10};
+constexpr int accel_max{200};
+
 void step_light() {
   static unsigned long lastLedTime = 0;
   unsigned long now = millis();
@@ -24,7 +27,7 @@ void step_light() {
 void step_read_command() {
   if (radio.read(&cmd)) {
     int wheel = map(cmd.left_h, 0, 1023, 60, 120);
- 
+    Utility::print("Data from nrf is: lh= ", cmd.right_v, " value=", cmd.left_h);
     
     // wheel
     car.shift(wheel);
@@ -33,15 +36,20 @@ void step_read_command() {
     beep.toggle(cmd.left_v < 10);
 
     // engine
- 
+    if (cmd.right_v > 650) {
+      auto accel = map(cmd.right_v, 650, 1023, accel_min, accel_max);
       car.setAccel(accel);
       car.backward();
- 
+      Utility::print("Backward: ", cmd.right_v, "Accel: ", accel);
+    } else if (cmd.right_v < 550) {
+      auto accel = map(cmd.right_v, 500, 0, accel_min, accel_max);
       car.setAccel(accel);
       car.forward();
+      Utility::print("Forward:  ", cmd.right_v, "Accel: ", accel);
     } else {
       car.stop();
- 
+      Utility::print("Stop:     ", cmd.right_v);
+    }
 
     /*
     switch (cmd.type) {
@@ -99,5 +107,3 @@ void setup() {
 void loop() {
   step_read_command();
   step_light();
-  car.stepAccel();
-  delay(15);

@@ -97,5 +97,6 @@ void setup() {
 void loop() {
   step_read_command();
   step_light();
+  car.stepAccel();
   delay(15);
 }

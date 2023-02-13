@@ -11,6 +11,8 @@
 class Car {
   Servo servo;
   int _lastAngle{ -1 };
+  int _realAccel{0};
+  int _goalAccel{0};
 
 public:
   void setup();
@@ -18,6 +20,8 @@ public:
   void stop();
   void backward();
   void shift(int angle);
+  void setAccel(int accel);
+  bool stepAccel();
 };
 
 inline void Car::setup() {
@@ -60,6 +64,29 @@ inline void Car::shift(int angle) {
   Utility::print("Shift to ", angle);
   servo.write(angle);
   _lastAngle = angle;
+}
+
+inline void Car::setAccel(int accel)
+{
+  _goalAccel = accel;
+}
+
+
+inline bool Car::stepAccel()
+{
+  if (_goalAccel > _realAccel) {
+    _realAccel++;
+    analogWrite(PIN_ACCEL, _realAccel);
+    return true;
+  }
+  
+  if (_goalAccel < _realAccel) {
+    _realAccel--;
+    analogWrite(PIN_ACCEL, _realAccel);
+    return true;
+  }
+
+  return false;
 }
 
 #endif  // MOTOR_H

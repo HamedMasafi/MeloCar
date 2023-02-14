@@ -38,6 +38,7 @@ inline void Car::setup() {
   pinMode(PIN_ACCEL, OUTPUT);
 
   servo.attach(PIN_SERVO);
+  analogWrite(PIN_ACCEL, 255);
 }
 
 inline void Car::forward() {
@@ -52,6 +53,13 @@ inline void Car::backward() {
   setStatus(Status::Backward);
 }
 
+<<<<<<< HEAD
+=======
+inline void Car::setAccel(int accel) {
+  analogWrite(PIN_ACCEL, 255);
+}
+
+>>>>>>> 75586f0 (befor merge)
 inline void Car::setStatus(Status status) {
   if (status == _status)
     return;

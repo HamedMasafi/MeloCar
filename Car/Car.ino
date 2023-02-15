@@ -13,7 +13,7 @@ Beep beep{PIN_BEEP};
 #define LED_SLEEP_TIME 150
 
 constexpr int accel_min{10};
-constexpr int accel_max{160};
+constexpr int accel_max{80};
 
 void step_light() {
   static unsigned long lastLedTime = 0;
@@ -43,47 +43,19 @@ void step_read_command() {
       auto accel = map(cmd.right_v, gas_max, 1023, accel_min, accel_max);
       car.setAccel(accel);
       car.backward();
+      delay(30);
       // Utility::print("Backward: ", cmd.right_v, "Accel: ", accel);
     } else if (cmd.right_v < gas_min) {
       auto accel = map(cmd.right_v, gas_min, 0, accel_min, accel_max);
       car.setAccel(accel);
       car.forward();
+      delay(30);
       // Utility::print("Forward:  ", cmd.right_v, "Accel: ", accel);
     } else {
       car.stop();
+      delay(30);
       // Utility::print("Stop:     ", cmd.right_v);
     }
-
-    /*
-    switch (cmd.type) {
-      case RF_COMMAND_SHIF:
-        car.shift(map(cmd.param, 0, 200, 120, 60));
-        break;
-
-      case RF_COMMAND_GAS:
-        if (cmd.param == RF_GAS_PARAM_START)
-          car.forward();
-        else if (cmd.param == RF_GAS_PARAM_REVERSE)
-          car.backward();
-        else
-          car.stop();
-        break;
-
-      case RF_COMMAND_SET_LED_OFF:
-        Led::turn_off();
-        break;
-
-      case RF_COMMAND_SET_LED_ON:
-        Led::turn_on();
-        break;
-
-      case RF_COMMAND_SET_LED_CHANGE_DANCER:
-        Led::change_dancer();
-        break;
-    }
-
-    cmd.type = cmd.param = 0;
-    */
 
   } else {
     //  Utility::print("No command");
@@ -108,6 +80,13 @@ void setup() {
   Led::turn_off();
 }
 
+int n = 0;
 void loop() {
   step_read_command();
   step_light();
+  n++;
+  if (n > 10) {
+    car.stepAccel();
+    n = 0;
+  }
+}

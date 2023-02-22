@@ -85,7 +85,7 @@ void loop() {
   step_read_command();
   step_light();
   n++;
-  if (n > 10) {
+  if (n > 3) {
     car.stepAccel();
     n = 0;
   }

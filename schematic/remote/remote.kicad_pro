@@ -33,9 +33,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.6,
-          "height": 1.9,
-          "width": 1.9
+          "drill": 1.016,
+          "height": 1.8796,
+          "width": 1.8796
         },
         "silk_line_width": 0.15,
         "silk_text_italic": false,
@@ -126,6 +126,10 @@
         {
           "diameter": 0.0,
           "drill": 0.0
+        },
+        {
+          "diameter": 1.9,
+          "drill": 0.5
         }
       ],
       "zones_allow_external_fillets": false,
@@ -347,7 +351,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "car.kicad_pro",
+    "filename": "remote.kicad_pro",
     "version": 1
   },
   "net_settings": {

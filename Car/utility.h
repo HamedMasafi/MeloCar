@@ -2,6 +2,7 @@
 #define UTILITY_H
 
 #define PRINT_DEBUG
+
 namespace Utility {
 template<typename T>
 void bound(const T &lbound, T &var, const T &ubound) {

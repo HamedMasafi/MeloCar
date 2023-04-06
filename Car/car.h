@@ -9,7 +9,7 @@
 #include "pins.h"
 
 #define ACCEL_MIN 60
-#define ACCEL_MAX 60
+#define ACCEL_MAX 220
 
 class Car {
 public:
@@ -42,7 +42,8 @@ inline void Car::setup() {
   pinMode(PIN_ACCEL, OUTPUT);
 
   servo.attach(PIN_SERVO);
-  analogWrite(PIN_ACCEL, 255);
+
+  analogWrite(PIN_ACCEL, 60);
 }
 
 inline void Car::forward() {
@@ -61,7 +62,7 @@ inline void Car::setStatus(Status status) {
   if (status == _status)
     return;
   _realAccel = _goalAccel = ACCEL_MIN;
-  analogWrite(PIN_ACCEL, _realAccel);
+  // analogWrite(PIN_ACCEL, _realAccel);
   switch (status) {
     case Car::Status::Stopped:
       digitalWrite(PIN_MOTOR_1, LOW);
@@ -70,15 +71,15 @@ inline void Car::setStatus(Status status) {
       delay(15);
       break;
     case Car::Status::Forward:
-      // digitalWrite(PIN_MOTOR_1, LOW);
+      digitalWrite(PIN_MOTOR_1, LOW);
       delay(15);
-      // digitalWrite(PIN_MOTOR_2, HIGH);
+      digitalWrite(PIN_MOTOR_2, HIGH);
       delay(15);
       break;
     case Car::Status::Backward:
-      // digitalWrite(PIN_MOTOR_1, HIGH);
+      digitalWrite(PIN_MOTOR_1, HIGH);
       delay(15);
-      // digitalWrite(PIN_MOTOR_2, LOW);
+      digitalWrite(PIN_MOTOR_2, LOW);
       delay(15);
       break;
   }
@@ -101,22 +102,25 @@ inline void Car::shift(int angle) {
 
 inline void Car::setAccel(int accel) {
   _goalAccel = accel;
+      analogWrite(PIN_ACCEL, 255);
+
 }
 
 
 inline bool Car::stepAccel() {
+  return ;
   constexpr int accel_step{ 3 };
 
   if (_goalAccel - _realAccel > accel_step + 1) {
     _realAccel += accel_step;
-    // analogWrite(PIN_ACCEL, _realAccel);
+    analogWrite(PIN_ACCEL, _realAccel);
     Utility::print("accel++", _realAccel, "=>", _goalAccel);
     return true;
   }
 
   if (_goalAccel - _realAccel < -accel_step - 1) {
     _realAccel -= accel_step;
-    // analogWrite(PIN_ACCEL, _realAccel);
+    analogWrite(PIN_ACCEL, _realAccel);
     Utility::print("accel--", _realAccel, "=>", _goalAccel);
     return true;
   }

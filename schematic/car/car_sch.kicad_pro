@@ -347,7 +347,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "car.kicad_pro",
+    "filename": "car_sch.kicad_pro",
     "version": 1
   },
   "net_settings": {

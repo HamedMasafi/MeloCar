@@ -8,12 +8,12 @@
 Car car;
 Radio radio(Radio::RadioType::Client);
 Radio::Command cmd;
-Beep beep{PIN_BEEP};
+Beep beep{ PIN_BEEP };
 
 #define LED_SLEEP_TIME 150
 
-constexpr int accel_min{10};
-constexpr int accel_max{80};
+constexpr int accel_min{ 10 };
+constexpr int accel_max{ 80 };
 
 void step_light() {
   static unsigned long lastLedTime = 0;
@@ -26,18 +26,17 @@ void step_light() {
 
 void step_read_command() {
   if (radio.read(&cmd)) {
-    delay(40);
     int wheel = map(cmd.left_h, 0, 1023, 60, 120);
     Utility::print("Data from nrf is: lh= ", cmd.right_v, " value=", cmd.left_h);
-    
+
     // wheel
     car.shift(wheel);
 
     // horn
     beep.toggle(cmd.left_v < 10);
 
-  constexpr int gas_min{650};
-  constexpr int gas_max{800};
+    constexpr int gas_min{ 650 };
+    constexpr int gas_max{ 800 };
     // engine
     if (cmd.right_v > gas_max) {
       auto accel = map(cmd.right_v, gas_max, 1023, accel_min, accel_max);
@@ -62,6 +61,15 @@ void step_read_command() {
   }
 }
 
+void test()
+{
+  car.setAccel(200);
+  car.forward();
+  delay(200);
+  car.backward();
+  delay(200);
+  car.stop();
+}
 void setup() {
   Serial.begin(9600);
   Utility::print("Starting");
@@ -78,6 +86,8 @@ void setup() {
 
   Utility::print("Start...");
   Led::turn_off();
+
+  test();
 }
 
 int n = 0;

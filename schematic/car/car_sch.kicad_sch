@@ -1006,7 +1006,7 @@
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 462ba2d8-20cc-4820-b227-ba02d60db96d)
     (property "Reference" "J4" (id 0) (at 89.535 53.34 0))
-    (property "Value" "Conn_01x01_Male" (id 1) (at 89.535 55.88 0))
+    (property "Value" "Accel" (id 1) (at 89.535 55.88 0))
     (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical" (id 2) (at 88.9 58.42 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -1101,24 +1101,6 @@
     (pin "1" (uuid 369ff158-7f61-4c61-a0f3-c979af117912))
   )
 
-  (symbol (lib_id "power:+12V") (at 91.44 76.2 270) (unit 1)
-    (in_bom yes) (on_board yes) (fields_autoplaced)
-    (uuid 5c05cc92-a085-4821-986d-1508f4b72961)
-    (property "Reference" "#PWR0113" (id 0) (at 87.63 76.2 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+12V" (id 1) (at 95.25 76.1999 90)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Footprint" "" (id 2) (at 91.44 76.2 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 91.44 76.2 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 74ef4add-86b0-4456-bf7c-fbc9bd19a253))
-  )
-
   (symbol (lib_id "Connector:Conn_01x03_Male") (at 118.11 48.26 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 5f0cb4f5-99dd-431c-94d2-6151fa427b3a)
@@ -1210,7 +1192,7 @@
     (property "Reference" "NRF1" (id 0) (at 101.6 90.1699 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Value" "Conn_01x06_Male" (id 1) (at 101.6 92.7099 0)
+    (property "Value" "NRF24L01" (id 1) (at 101.6 92.7099 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical" (id 2) (at 100.33 90.17 0)
@@ -1278,6 +1260,24 @@
     (pin "2" (uuid 670e5048-fba9-4ede-98eb-9ae8932f13ba))
   )
 
+  (symbol (lib_id "power:+5V") (at 91.44 76.2 270) (unit 1)
+    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (uuid e19ee15a-d6dc-40bc-8daf-0b9ae8be0bdd)
+    (property "Reference" "#PWR0108" (id 0) (at 87.63 76.2 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+5V" (id 1) (at 95.25 76.1999 90)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "" (id 2) (at 91.44 76.2 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (id 3) (at 91.44 76.2 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid e5f28fa1-8529-4306-ac23-4a1fcf4eac09))
+  )
+
   (symbol (lib_id "power:GND") (at 124.46 59.69 90) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid eb92ef41-78fb-4fe4-827a-e423a8ae6353)
@@ -1299,7 +1299,7 @@
   (symbol (lib_id "power:GND") (at 26.67 63.5 270) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid ff16ee3c-e788-484d-ae7a-18b27e86f391)
-    (property "Reference" "#PWR?" (id 0) (at 20.32 63.5 0)
+    (property "Reference" "#PWR0107" (id 0) (at 20.32 63.5 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (id 1) (at 27.94 63.4999 90)
@@ -1337,6 +1337,12 @@
     (path "/3e7a9fcc-b142-41a3-95a5-78c50c896390"
       (reference "#PWR0106") (unit 1) (value "GND") (footprint "")
     )
+    (path "/ff16ee3c-e788-484d-ae7a-18b27e86f391"
+      (reference "#PWR0107") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/e19ee15a-d6dc-40bc-8daf-0b9ae8be0bdd"
+      (reference "#PWR0108") (unit 1) (value "+5V") (footprint "")
+    )
     (path "/3cdf2078-c986-49ab-882b-11f67003c171"
       (reference "#PWR0109") (unit 1) (value "GND") (footprint "")
     )
@@ -1348,9 +1354,6 @@
     )
     (path "/4f6b8534-05d2-4e07-8cb1-dcc39db5a3c9"
       (reference "#PWR0112") (unit 1) (value "+5V") (footprint "")
-    )
-    (path "/5c05cc92-a085-4821-986d-1508f4b72961"
-      (reference "#PWR0113") (unit 1) (value "+12V") (footprint "")
     )
     (path "/544893c4-81c4-4324-837c-56d6520110ab"
       (reference "#PWR0114") (unit 1) (value "GND") (footprint "")
@@ -1364,9 +1367,6 @@
     (path "/57a7efd3-02ea-44fe-bda1-b107d086828f"
       (reference "#PWR0117") (unit 1) (value "GND") (footprint "")
     )
-    (path "/ff16ee3c-e788-484d-ae7a-18b27e86f391"
-      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
-    )
     (path "/5f0cb4f5-99dd-431c-94d2-6151fa427b3a"
       (reference "J1") (unit 1) (value "Led") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
     )
@@ -1377,7 +1377,7 @@
       (reference "J3") (unit 1) (value "NRF-Power") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
     )
     (path "/462ba2d8-20cc-4820-b227-ba02d60db96d"
-      (reference "J4") (unit 1) (value "Conn_01x01_Male") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical")
+      (reference "J4") (unit 1) (value "Accel") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical")
     )
     (path "/489b3162-1756-4d9c-8b75-ba1ffece0b1e"
       (reference "J5") (unit 1) (value "Micro-Power-IN") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
@@ -1395,7 +1395,7 @@
       (reference "J10") (unit 1) (value "Motor-PWR-IN") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
     )
     (path "/bf74795d-5121-4722-b0f3-84275bd5c707"
-      (reference "NRF1") (unit 1) (value "Conn_01x06_Male") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical")
+      (reference "NRF1") (unit 1) (value "NRF24L01") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical")
     )
     (path "/1211422c-155d-4bd7-a798-21ca94f38c11"
       (reference "U1") (unit 1) (value "ARDUINO_PRO_MINI") (footprint "MODULE_ARDUINO_PRO_MINI")

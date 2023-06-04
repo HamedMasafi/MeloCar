@@ -1,4 +1,4 @@
-20316625599132708
+20318306975054837
 Arduino pro mini
 MODULE_ARDUINO_PRO_MINI
 
@@ -6,6 +6,13 @@ MODULE_ARDUINO_PRO_MINI
 0
 34
 34
+Arduino pro mini
+NRF24L01
+
+
+0
+8
+8
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)

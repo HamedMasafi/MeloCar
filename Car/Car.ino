@@ -86,8 +86,6 @@ void setup() {
 
   Utility::print("Start...");
   Led::turn_off();
-
-  test();
 }
 
 int n = 0;

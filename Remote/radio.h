@@ -22,8 +22,8 @@ public:
     int left_h;
     int right_v;
     int right_h;
-    int extra_1;
-    int extra_2;
+    int sw_left;
+    int sw_right;
   };
   Radio(RadioType type, int ce = PIN_CE, int csn = PIN_CSN);
 

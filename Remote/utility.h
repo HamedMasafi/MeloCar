@@ -1,5 +1,15 @@
 #pragma once
 
+template<class T, class U>
+struct is_same {
+    static constexpr bool value = false;
+};
+ 
+template<class T>
+struct is_same<T, T> {
+    static constexpr bool value = true;
+};
+
 namespace Utility {
   
 template<typename T>
@@ -19,7 +29,20 @@ T map(T x, T in_min, T in_max, T out_min, T out_max) {
 template<typename First, typename... Types>
 void print_impl(First f, Types... others)
 {
-  Serial.print(f);
+  if (is_same<First, bool>::value)
+    Serial.print(f ? "true" : "false");
+  else
+    Serial.print(f);
+  if constexpr (sizeof...(Types))
+    print_impl(others...);
+  else
+    Serial.println();
+}
+
+template<typename... Types>
+void print_impl(bool f, Types... others)
+{
+  Serial.print(f ? "true" : "false");
   if constexpr (sizeof...(Types))
     print_impl(others...);
   else

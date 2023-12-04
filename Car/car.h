@@ -3,7 +3,7 @@
 // #include <Servo.h>
 #include <SPI.h>
 #include <Arduino.h>
-#include <VarSpeedServo.h> 
+#include <VarSpeedServo.h>
 
 #include "utility.h"
 #include "pins.h"
@@ -61,6 +61,8 @@ inline void Car::backward() {
 inline void Car::setStatus(Status status) {
   if (status == _status)
     return;
+
+  Utility::print("Set status to: ", (int)status);
   _realAccel = _goalAccel = ACCEL_MIN;
   // analogWrite(PIN_ACCEL, _realAccel);
   switch (status) {
@@ -102,13 +104,12 @@ inline void Car::shift(int angle) {
 
 inline void Car::setAccel(int accel) {
   _goalAccel = accel;
-      analogWrite(PIN_ACCEL, 255);
-
+  analogWrite(PIN_ACCEL, 255);
 }
 
 
 inline bool Car::stepAccel() {
-  return ;
+  return;
   constexpr int accel_step{ 3 };
 
   if (_goalAccel - _realAccel > accel_step + 1) {

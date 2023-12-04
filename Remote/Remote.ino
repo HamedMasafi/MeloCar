@@ -32,12 +32,12 @@ void loop() {
   cmd.sw_left = digitalRead(PIN_SW_LEFT);
   cmd.sw_right = digitalRead(PIN_SW_RIGHT);
   auto r = radio.send(&cmd);
-  Utility::print("Send command: " , r,
-                 " ; left h:", cmd.left_h, 
-                 " ; left v:", cmd.left_v, 
-                 " ; right h:", cmd.right_h, 
-                 " ; right v:", cmd.right_v,
-                 " ; left:", cmd.sw_left,
-                 " ; right:", cmd.sw_right);
+  // Utility::print("Send command: " , r,
+  //                " ; left h:", cmd.left_h, 
+  //                " ; left v:", cmd.left_v, 
+  //                " ; right h:", cmd.right_h, 
+  //                " ; right v:", cmd.right_v,
+  //                " ; left:", cmd.sw_left,
+  //                " ; right:", cmd.sw_right);
   delay(30);
 }

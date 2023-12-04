@@ -90,7 +90,9 @@ void setup() {
 
 int n = 0;
 void loop() {
+  Utility::print("Read command");
   step_read_command();
+  Utility::print("Done");
   step_light();
   n++;
   if (n > 3) {

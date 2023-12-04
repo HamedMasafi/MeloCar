@@ -3,7 +3,7 @@
 // #include <Servo.h>
 #include <SPI.h>
 #include <Arduino.h>
-#include <VarSpeedServo.h> 
+#include <Servo.h> 
 
 #include "utility.h"
 #include "pins.h"
@@ -28,7 +28,7 @@ public:
   void setStatus(Status status);
 
 private:
-  VarSpeedServo servo;
+  Servo servo;
   Status _status{ Status::Stopped };
   int _lastAngle{ -1 };
   int _realAccel{ 0 };

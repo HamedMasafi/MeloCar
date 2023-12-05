@@ -1,12 +1,14 @@
 #include <Adafruit_NeoPixel.h>
 #include "music_player.h"
+#include "utility.h"
+
+#define PIN_BEEP 2
+#define PIN_LED 5
+#define PIN_START_POS 6
+#define PIN_WIRE_CONTACT 7
+#define PIN_END_POS 8
 
 #define NUM_LEDS 7
-#define PIN_LED 5
-#define PIN_START_POS 8
-#define PIN_END_POS 7
-#define PIN_WIRE_CONTACT 6
-#define PIN_BEEP 2
 
 Adafruit_NeoPixel pixels(NUM_LEDS, PIN_LED, NEO_GRB + NEO_KHZ800);
 
@@ -23,12 +25,18 @@ enum class State {
   Contact
 };
 
+void print_pins_state() {
+  Utility::print("Start pin:   ", digitalRead(PIN_START_POS));
+  Utility::print("End pin:     ", digitalRead(PIN_END_POS));
+  Utility::print("Contact pin: ", digitalRead(PIN_WIRE_CONTACT));
+}
+
 State get_state() {
-  if (digitalRead(PIN_START_POS))
+  if (digitalRead(PIN_START_POS) == LOW)
     return State::Start;
-  if (digitalRead(PIN_END_POS))
+  if (digitalRead(PIN_END_POS) == LOW)
     return State::End;
-  if (digitalRead(PIN_WIRE_CONTACT))
+  if (digitalRead(PIN_WIRE_CONTACT) == LOW)
     return State::Contact;
   return State::Free;
 }
@@ -38,17 +46,38 @@ void set_led_color(uint32_t color) {
   pixels.show();
 }
 
+void start_light_dance() {
+  for (int i = 0; i <= 7; i++) {
+    pixels.fill(color_black, 0, 7);
+    pixels.fill(color_green, i, 1);
+    pixels.show();
+    delay(400);
+  }
+}
 void setup() {
   Serial.begin(9600);
-
-  pixels.begin();
-  pixels.setBrightness(120);
-  pixels.show();
+  Utility::print("Starting...");
 
   pinMode(PIN_BEEP, OUTPUT);
+  pinMode(PIN_LED, OUTPUT);
   pinMode(PIN_START_POS, INPUT_PULLUP);
   pinMode(PIN_END_POS, INPUT_PULLUP);
   pinMode(PIN_WIRE_CONTACT, INPUT_PULLUP);
+
+  pixels.begin();
+  pixels.setBrightness(30);
+  pixels.show();
+
+  set_led_color(color_white);
+  // tone(PIN_BEEP, 500);
+  delay(400);
+  set_led_color(color_black);
+  // noTone(PIN_BEEP);
+
+  start_light_dance();
+
+  Utility::print("Setup done.");
+  print_pins_state();
 }
 
 State last_state = State::Free;
@@ -65,11 +94,14 @@ void contact() {
   set_led_color(color_red);
   tone(PIN_BEEP, 1000);
   fault++;
-  if (fault = >= 3)
+  if (fault >= 3) {
     game_lost = true;
+    set_led_color(color_red);
+  } else {
+    set_led_color(color_black);
+  }
   delay(100);
   noTone(PIN_BEEP);
-  set_led_color(color_black);
 }
 
 void loop() {
@@ -83,17 +115,21 @@ void loop() {
 
   switch (state) {
     case State::Free:
+      Utility::print("Free");
       set_led_color(color_black);
       break;
     case State::Start:
+      Utility::print("Start");
       start_new_game();
       break;
     case State::End:
+      Utility::print("End");
       game_lost = true;
       set_led_color(color_green);
       sing(1);
       break;
     case State::Contact:
+      Utility::print("Contact");
       contact();
       break;
   }

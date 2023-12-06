@@ -1,13 +1,14 @@
 #include "Arduino.h"
 #include "pitches.h"
 #include "themes.h"
-#define melodyPin 8
+#include "pins.h"
+// #define melodyPin 2
 //Mario main theme melody
 
 
 void setup2(void)
 {
-   pinMode(melodyPin, OUTPUT);//buzzer
+   pinMode(PIN_BEEP, OUTPUT);//buzzer
    pinMode(13, OUTPUT);//led indicator when singing a note
 pinMode(2, INPUT_PULLUP); //Button 1 with internal pull up
 pinMode(3, INPUT_PULLUP); //Button 2 with internal pull up
@@ -74,7 +75,7 @@ void play_melody(int *melody, int *tempo, int melody_size){
        //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
        int noteDuration = 1000/tempo[thisNote];
 
-       buzz(melodyPin, melody[thisNote],noteDuration);
+       buzz(PIN_BEEP, melody[thisNote],noteDuration);
 
        // to distinguish the notes, set a minimum time between them.
        // the note's duration + 30% seems to work well:
@@ -82,7 +83,7 @@ void play_melody(int *melody, int *tempo, int melody_size){
        delay(pauseBetweenNotes);
 
        // stop the tone playing:
-       buzz(melodyPin, 0,noteDuration);
+       buzz(PIN_BEEP, 0,noteDuration);
     }
   
   }

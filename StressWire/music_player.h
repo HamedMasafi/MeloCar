@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "pitches.h"
 #include "themes.h"
 #define melodyPin 8

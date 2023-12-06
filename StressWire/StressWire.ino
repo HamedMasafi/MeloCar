@@ -41,7 +41,7 @@ State get_state() {
   return State::Free;
 }
 
-void set_led_color(uint32_t color) {
+void set_led_color(uint32_t color, int count = NUM_LEDS, int start = 0) {
   pixels.fill(color, 0, 7);
   pixels.show();
 }
@@ -85,22 +85,20 @@ bool game_lost = false;
 int fault = 0;
 
 void start_new_game() {
-  set_led_color(color_yellow);
+  set_led_color(color_green);
   game_lost = false;
   fault = 0;
+  delay(800);
+  set_led_color(color_black);
 }
 
 void contact() {
   set_led_color(color_red);
   tone(PIN_BEEP, 1000);
   fault++;
-  if (fault >= 3) {
-    game_lost = true;
-    set_led_color(color_red);
-  } else {
-    set_led_color(color_black);
-  }
-  delay(100);
+  game_lost = fault >= 7;
+  set_led_color(color_red, fault);
+  delay(100 + 80 * fault);
   noTone(PIN_BEEP);
 }
 
@@ -116,7 +114,8 @@ void loop() {
   switch (state) {
     case State::Free:
       Utility::print("Free");
-      set_led_color(color_black);
+      if (!game_lost)
+        set_led_color(color_black);
       break;
     case State::Start:
       Utility::print("Start");
@@ -130,7 +129,8 @@ void loop() {
       break;
     case State::Contact:
       Utility::print("Contact");
-      contact();
+      if (!game_lost)
+        contact();
       break;
   }
 

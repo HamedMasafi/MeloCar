@@ -1,16 +1,8 @@
-#include <Adafruit_NeoPixel.h>
 #include "music_player.h"
 #include "utility.h"
 #include "pins.h"
+#include "led.h"
 
-
-Adafruit_NeoPixel pixels(NUM_LEDS, PIN_LED, NEO_GRB + NEO_KHZ800);
-
-auto color_red = Adafruit_NeoPixel::Color(255, 0, 0);
-auto color_green = Adafruit_NeoPixel::Color(0, 255, 0);
-auto color_white = Adafruit_NeoPixel::Color(255, 255, 255);
-auto color_black = Adafruit_NeoPixel::Color(0, 0, 0);
-auto color_yellow = Adafruit_NeoPixel::Color(255, 255, 0);
 
 enum class State {
   Free,
@@ -35,19 +27,12 @@ State get_state() {
   return State::Free;
 }
 
-void set_led_color(uint32_t color, int count = NUM_LEDS, int start = 0) {
-  pixels.fill(color, 0, 7);
-  pixels.show();
+void buzz(int freq, int duration) {
+  tone(PIN_BEEP, 1000);
+  delay(duration);
+  noTone(PIN_BEEP);
 }
 
-void start_light_dance() {
-  for (int i = 0; i <= 7; i++) {
-    pixels.fill(color_black, 0, 7);
-    pixels.fill(color_green, i, 1);
-    pixels.show();
-    delay(400);
-  }
-}
 void setup() {
   Serial.begin(9600);
   Utility::print("Starting...");
@@ -96,6 +81,14 @@ void contact() {
   noTone(PIN_BEEP);
 }
 
+void finish() {
+  game_lost = true;
+  for (int i = fault; i <= NUM_LEDS; ++i) {
+    set_led_color(color_green, i - fault, fault);
+    buzz(2000, 200);
+  }
+  sing(1);
+}
 void loop() {
   auto state = get_state();
 
@@ -117,9 +110,7 @@ void loop() {
       break;
     case State::End:
       Utility::print("End");
-      game_lost = true;
-      set_led_color(color_green);
-      sing(1);
+      finish();
       break;
     case State::Contact:
       Utility::print("Contact");

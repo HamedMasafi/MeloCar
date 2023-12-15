@@ -61,6 +61,8 @@ inline void Car::backward() {
 inline void Car::setStatus(Status status) {
   if (status == _status)
     return;
+
+  Utility::print("Set status to: ", (int)status);
   _realAccel = _goalAccel = ACCEL_MIN;
   // analogWrite(PIN_ACCEL, _realAccel);
   switch (status) {
@@ -103,7 +105,6 @@ inline void Car::shift(int angle) {
 inline void Car::setAccel(int accel) {
   _goalAccel = accel;
       analogWrite(PIN_ACCEL, 255);
-
 }
 
 

@@ -27,7 +27,7 @@ void step_light() {
 void step_read_command() {
   if (radio.read(&cmd)) {
     int wheel = map(cmd.left_h, 0, 1023, 60, 120);
-    // Utility::print("Data from nrf is: lh= ", cmd.right_v, " value=", cmd.left_h);
+    Utility::print("Data from nrf is: lh= ", cmd.right_v, " value=", cmd.left_h);
 
     // wheel
     car.shift(wheel);
@@ -92,9 +92,9 @@ void setup() {
 
 int n = 0;
 void loop() {
-  Utility::print("Read command");
+  // Utility::print("Read command");
   step_read_command();
-  Utility::print("Done");
+  // Utility::print("Done");
   step_light();
   n++;
   if (n > 3) {

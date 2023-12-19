@@ -27,7 +27,7 @@ void step_light() {
 void step_read_command() {
   if (radio.read(&cmd)) {
     int wheel = map(cmd.left_h, 1023, 0, 60, 120);
-    Utility::print("Data from nrf is: lh= ", cmd.left_h, " value=", cmd.right_v);
+    // Utility::print("Data from nrf is: lh= ", cmd.left_h, " value=", cmd.right_v);
 
     // wheel
     car.shift(wheel);
@@ -38,26 +38,26 @@ void step_read_command() {
     constexpr int gas_min{ 500 };
     constexpr int gas_max{ 560 };
     // engine
-    // if (cmd.right_v > gas_max) {
-    //   auto accel = map(cmd.right_v, gas_max, 1023, accel_min, accel_max);
-    //   // Utility::print("gas=", cmd.right_v, "  accel=", accel, " Back");
-    //   car.setAccel(accel);
-    //   car.backward();
-    //   delay(30);
-    //   // Utility::print("Backward: ", cmd.right_v, "Accel: ", accel);
-    // } else if (cmd.right_v < gas_min) {
-    //   auto accel = map(cmd.right_v, gas_min, 0, accel_min, accel_max);
-    //   // Utility::print("gas=", cmd.right_v, "  accel=", accel, " Forward");
-    //   car.setAccel(accel);
-    //   car.forward();
-    //   delay(30);
-    //   // Utility::print("Forward:  ", cmd.right_v, "Accel: ", accel);
-    // } else {
-    //   // Utility::print("gas=", cmd.right_v, "  Stop");
-    //   car.stop();
-    //   delay(30);
-    //   // Utility::print("Stop:     ", cmd.right_v);
-    // }
+    if (cmd.right_v > gas_max) {
+      auto accel = map(cmd.right_v, gas_max, 1023, accel_min, accel_max);
+      // Utility::print("gas=", cmd.right_v, "  accel=", accel, " Back");
+      car.setAccel(accel);
+      car.forward();
+      delay(30);
+      // Utility::print("Forward:  ", cmd.right_v, "Accel: ", accel);
+    } else if (cmd.right_v < gas_min) {
+      auto accel = map(cmd.right_v, gas_min, 0, accel_min, accel_max);
+      // Utility::print("gas=", cmd.right_v, "  accel=", accel, " Forward");
+      car.setAccel(accel);
+      car.backward();
+      delay(30);
+      // Utility::print("Backward: ", cmd.right_v, "Accel: ", accel);
+    } else {
+      // Utility::print("gas=", cmd.right_v, "  Stop");
+      car.stop();
+      delay(30);
+      // Utility::print("Stop:     ", cmd.right_v);
+    }
 
   } else {
       // Utility::print("No command");

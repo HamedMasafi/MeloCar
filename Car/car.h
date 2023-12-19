@@ -68,7 +68,6 @@ inline void Car::setStatus(Status status) {
   switch (status) {
     case Car::Status::Stopped:
       digitalWrite(PIN_MOTOR_1, LOW);
-      delay(15);
       digitalWrite(PIN_MOTOR_2, LOW);
       delay(15);
       break;
@@ -99,12 +98,13 @@ inline void Car::shift(int angle) {
   //   angle = 120;
   Utility::print("Shift to ", angle);
   servo.write(angle);
+  delay(110);
   _lastAngle = angle;
 }
 
 inline void Car::setAccel(int accel) {
   _goalAccel = accel;
-      analogWrite(PIN_ACCEL, 255);
+  analogWrite(PIN_ACCEL, 200);
 }
 
 

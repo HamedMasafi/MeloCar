@@ -3,8 +3,8 @@
 // #include <Servo.h>
 #include <SPI.h>
 #include <Arduino.h>
-#include <Servo.h> 
-
+#include <Servo.h>
+#include "DRV8833.h"
 #include "utility.h"
 #include "pins.h"
 
@@ -30,20 +30,22 @@ public:
 private:
   Servo servo;
   Status _status{ Status::Stopped };
+  DRV8833 engine;
   int _lastAngle{ -1 };
   int _realAccel{ 0 };
   int _goalAccel{ 0 };
 };
 
 inline void Car::setup() {
-  pinMode(PIN_MOTOR_1, OUTPUT);
-  pinMode(PIN_MOTOR_2, OUTPUT);
+  //pinMode(PIN_MOTOR_1, OUTPUT);
+  //pinMode(PIN_MOTOR_2, OUTPUT);
   pinMode(PIN_SERVO, OUTPUT);
-  pinMode(PIN_ACCEL, OUTPUT);
+  //pinMode(PIN_ACCEL, OUTPUT);
 
   servo.attach(PIN_SERVO);
 
-  analogWrite(PIN_ACCEL, 60);
+  engine.attachMotorA(PIN_MOTOR_1, PIN_MOTOR_2);
+  // analogWrite(PIN_ACCEL, 60);
 }
 
 inline void Car::forward() {
@@ -67,21 +69,13 @@ inline void Car::setStatus(Status status) {
   // analogWrite(PIN_ACCEL, _realAccel);
   switch (status) {
     case Car::Status::Stopped:
-      digitalWrite(PIN_MOTOR_1, LOW);
-      digitalWrite(PIN_MOTOR_2, LOW);
-      delay(15);
+      engine.motorAStop();
       break;
     case Car::Status::Forward:
-      digitalWrite(PIN_MOTOR_1, LOW);
-      delay(15);
-      digitalWrite(PIN_MOTOR_2, HIGH);
-      delay(15);
+      engine.motorAForward();
       break;
     case Car::Status::Backward:
-      digitalWrite(PIN_MOTOR_1, HIGH);
-      delay(15);
-      digitalWrite(PIN_MOTOR_2, LOW);
-      delay(15);
+      engine.motorAReverse();
       break;
   }
   delay(90);
@@ -104,24 +98,24 @@ inline void Car::shift(int angle) {
 
 inline void Car::setAccel(int accel) {
   _goalAccel = accel;
-  analogWrite(PIN_ACCEL, 200);
+  // analogWrite(PIN_ACCEL, 200);
 }
 
 
 inline bool Car::stepAccel() {
-  return ;
+  return;
   constexpr int accel_step{ 3 };
 
   if (_goalAccel - _realAccel > accel_step + 1) {
     _realAccel += accel_step;
-    analogWrite(PIN_ACCEL, _realAccel);
+    // analogWrite(PIN_ACCEL, _realAccel);
     Utility::print("accel++", _realAccel, "=>", _goalAccel);
     return true;
   }
 
   if (_goalAccel - _realAccel < -accel_step - 1) {
     _realAccel -= accel_step;
-    analogWrite(PIN_ACCEL, _realAccel);
+    // analogWrite(PIN_ACCEL, _realAccel);
     Utility::print("accel--", _realAccel, "=>", _goalAccel);
     return true;
   }

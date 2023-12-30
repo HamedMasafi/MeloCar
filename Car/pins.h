@@ -2,8 +2,8 @@
 
 // #define PIN_ACCEL   3
 #define PIN_BEEP    4
-#define PIN_MOTOR_2 5
-#define PIN_MOTOR_1 6
+#define PIN_MOTOR_1 5
+#define PIN_MOTOR_2 6
 #define LED_PIN     7
 #define PIN_SERVO   9
 

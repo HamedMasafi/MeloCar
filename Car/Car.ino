@@ -26,7 +26,7 @@ void step_light() {
 
 void run_command() {
   int wheel = map(cmd.left_h, 1023, 0, 60, 120);
-  // Utility::print("Data from nrf is: lh= ", cmd.left_h, " value=", cmd.right_v);
+  Utility::print("Data from nrf is: lh= ", cmd.left_h, " value=", cmd.right_v);
 
   // wheel
   car.shift(wheel);
@@ -62,7 +62,7 @@ void run_command() {
 void step_read_command_from_serial() {
   auto line = Serial.readStringUntil('\n');
 
-  if (!line.length()){
+  if (!line.length()) {
     delay(200);
     return;
   }
@@ -97,24 +97,30 @@ void setup() {
   Serial.begin(9600);
   Utility::print("Starting");
   Led::setup();
-  Led::set_color(255, 0, 0);
+  Led::set_color(255, 0, 0, 0);
 
   car.setup();
-  radio.setup();
+  Led::set_color(255, 0, 0, 1);
 
+  radio.setup();
+  Led::set_color(255, 0, 0, 2);
+  delay(1000);
 
   delay(200);
   car.shift(90);
+  Led::set_color(255, 0, 0, 3);
   // cmd.param = cmd.type = 0;
 
   Utility::print("Start...");
+  Led::set_color(255, 0, 0, 4);
+
   Led::turn_off();
 }
 
 int n = 0;
 void loop() {
   // Utility::print("Read command");
-  step_read_command_from_serial();
+  step_read_command();
   // Utility::print("Done");
   // step_light();
   // n++;

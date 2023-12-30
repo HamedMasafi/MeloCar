@@ -77,6 +77,9 @@ inline void Car::setStatus(Status status) {
     case Car::Status::Backward:
       engine.motorAReverse();
       break;
+    default:
+      // engine.motorAForward();
+      break;
   }
   delay(90);
   _status = status;

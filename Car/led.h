@@ -12,6 +12,8 @@ extern Adafruit_NeoPixel pixels;
 
 void setup();
 void set_color(uint8_t r, uint8_t g, uint8_t b);
+void set_color(uint8_t r, uint8_t g, uint8_t b, int n);
+
 void set_color(uint32_t color);
 void turn_off();
 void turn_on();
@@ -20,4 +22,4 @@ void change_dancer();
 
 };
 
-#endif // LED_H
+#endif  // LED_H

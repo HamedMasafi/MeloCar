@@ -51,7 +51,9 @@ void DRV8833::motorAForward()
 		// ...then put it in forward.
 		digitalWrite(this->a1, HIGH);
 		digitalWrite(this->a2, LOW);
-	}
+	} else {
+    Serial.println("Motor a is not attached");
+  }
 }
 
 void DRV8833::motorAForward(int speed)
@@ -71,7 +73,9 @@ void DRV8833::motorAStop()
 		// ...then stop it.
 		digitalWrite(this->a1, HIGH);
 		digitalWrite(this->a2, HIGH);
-	}
+	} else {
+    Serial.println("Motor a is not attached");
+  }
 }
 
 void DRV8833::motorBReverse()
@@ -81,7 +85,9 @@ void DRV8833::motorBReverse()
 		// ...then put it in reverse.
 		digitalWrite(this->b1, LOW);
 		digitalWrite(this->b2, HIGH);
-	}
+	} else {
+    Serial.println("Motor a is not attached");
+  }
 }
 
 void DRV8833::motorBReverse(int speed)

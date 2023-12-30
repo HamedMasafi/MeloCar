@@ -20,12 +20,12 @@ public:
     Client
   };
   struct Command {
-    int left_v;
-    int left_h;
-    int right_v;
-    int right_h;
-    bool sw_left;
-    bool sw_right;
+    int left_v{};
+    int left_h{};
+    int right_v{};
+    int right_h{};
+    bool sw_left{};
+    bool sw_right{};
   };
   Radio(RadioType type, int ce = PIN_CE, int csn = PIN_CSN);
 
@@ -45,14 +45,14 @@ Radio::Radio(RadioType type, int ce, int csn)
 
 void Radio::setup() {
   // if (!radio.begin()) {
-    // Utility::fatal("Unable to connect to NRF");
+  // Utility::fatal("Unable to connect to NRF");
   // }
   radio.begin();
 
   radio.setDataRate(RF24_2MBPS);
-  radio.setAutoAck(true);        // Ensure autoACK is enabled
-  radio.setChannel(108);          // Set RF communication channel.
-  radio.setPALevel(RF24_PA_MAX);  //translate to: RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_MED=-6dBM, and RF24_PA_HIGH=0dBm.
+  radio.setAutoAck(true);         // Ensure autoACK is enabled
+  radio.setChannel(80);          // Set RF communication channel.
+  radio.setPALevel(RF24_PA_HIGH);  //translate to: RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_MED=-6dBM, and RF24_PA_HIGH=0dBm.
   radio.setRetries(10, 3);        //Set the number of retry attempts and delay between retry attempts when transmitting a payload. The radio is waiting for an acknowledgement (ACK) packet during the delay between retry attempts.Mode: 0-15,0-15
   radio.setPayloadSize(sizeof(Command));
 
@@ -60,7 +60,7 @@ void Radio::setup() {
     radio.openWritingPipe(pipeIn);  //Open a pipe for writing
 
   if (_type == RadioType::Client) {
-    radio.openReadingPipe(0, pipeIn);  //Open a pipe for reading
+    radio.openReadingPipe(1, pipeIn);  //Open a pipe for reading
     // radio.openReadingPipe(2, pipeIn);  //Open a pipe for reading
     // radio.openReadingPipe(3, pipeIn);  //Open a pipe for reading
     // radio.openReadingPipe(4, pipeIn);  //Open a pipe for reading
@@ -84,12 +84,20 @@ bool Radio::send(Command *cmd) {
 }
 bool Radio::read(Command *cmd) {
   if (radio.available()) {
+    auto n = radio.getDynamicPayloadSize();
+    if (n < 1) {
+      // Corrupt payload has been flushed
+        Serial.print("Invalid data: ");
+        Serial.println(n);
+
+      return false;
+    }
     radio.read(cmd, sizeof(Command));
     return true;
   }
 
-  auto n = radio.getDynamicPayloadSize();
-  
+  // auto n = radio.getDynamicPayloadSize();
+
   return false;
 }
 

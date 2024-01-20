@@ -81,7 +81,7 @@ inline void Car::setStatus(Status status) {
       // engine.motorAForward();
       break;
   }
-  delay(90);
+  // delay(30);
   _status = status;
 }
 
@@ -95,7 +95,7 @@ inline void Car::shift(int angle) {
   //   angle = 120;
   Utility::print("Shift to ", angle);
   servo.write(angle);
-  delay(110);
+  // delay(110);
   _lastAngle = angle;
 }
 

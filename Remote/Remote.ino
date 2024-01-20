@@ -42,5 +42,5 @@ void loop() {
                  " ; right v:", cmd.right_v,
                  " ; left:", cmd.sw_left,
                  " ; right:", cmd.sw_right);
-  delay(1000);
+  // delay(1000);
 }

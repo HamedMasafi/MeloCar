@@ -42,19 +42,19 @@ void run_command() {
     // Utility::print("gas=", cmd.right_v, "  accel=", accel, " Back");
     car.setAccel(accel);
     car.forward();
-    delay(30);
+    // delay(30);
     // Utility::print("Forward:  ", cmd.right_v, "Accel: ", accel);
   } else if (cmd.right_v < gas_min) {
     auto accel = map(cmd.right_v, gas_min, 0, accel_min, accel_max);
     // Utility::print("gas=", cmd.right_v, "  accel=", accel, " Forward");
     car.setAccel(accel);
     car.backward();
-    delay(30);
+    // delay(30);
     // Utility::print("Backward: ", cmd.right_v, "Accel: ", accel);
   } else {
     // Utility::print("gas=", cmd.right_v, "  Stop");
     car.stop();
-    delay(30);
+    // delay(30);
     // Utility::print("Stop:     ", cmd.right_v);
   }
 }

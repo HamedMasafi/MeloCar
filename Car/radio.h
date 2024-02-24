@@ -44,14 +44,13 @@ Radio::Radio(RadioType type, int ce, int csn)
 }
 
 void Radio::setup() {
-  // if (!radio.begin()) {
-  // Utility::fatal("Unable to connect to NRF");
-  // }
-  radio.begin();
+  if (!radio.begin()) {
+    Utility::fatal("Unable to connect to NRF");
+  }
 
   radio.setDataRate(RF24_1MBPS);
-  radio.setAutoAck(false);         // Ensure autoACK is enabled
-  radio.setChannel(80);          // Set RF communication channel.
+  radio.setAutoAck(false);        // Ensure autoACK is enabled
+  radio.setChannel(80);           // Set RF communication channel.
   radio.setPALevel(RF24_PA_LOW);  //translate to: RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_MED=-6dBM, and RF24_PA_HIGH=0dBm.
   radio.setRetries(10, 3);        //Set the number of retry attempts and delay between retry attempts when transmitting a payload. The radio is waiting for an acknowledgement (ACK) packet during the delay between retry attempts.Mode: 0-15,0-15
   radio.setPayloadSize(sizeof(Command));
@@ -77,6 +76,8 @@ void Radio::setup() {
   }
   Serial.print("Connected to NRF successfuly; payload size=");
   Serial.println(sizeof(Command));
+  Serial.print("Is chip connected: ");
+  Serial.println(radio.isChipConnected() ? "yes" : "no");
 }
 
 bool Radio::send(Command *cmd) {
@@ -84,14 +85,14 @@ bool Radio::send(Command *cmd) {
 }
 bool Radio::read(Command *cmd) {
   if (radio.available()) {
-    auto n = radio.getDynamicPayloadSize();
-    if (n < 1) {
-      // Corrupt payload has been flushed
-        Serial.print("Invalid data: ");
-        Serial.println(n);
+    // auto n = radio.getDynamicPayloadSize();
+    // if (n < 1) {
+    //   // Corrupt payload has been flushed
+    //     Serial.print("Invalid data: ");
+    //     Serial.println(n);
 
-      return false;
-    }
+    //   return false;
+    // }
     radio.read(cmd, sizeof(Command));
     return true;
   }

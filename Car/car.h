@@ -64,18 +64,18 @@ inline void Car::setStatus(Status status) {
   if (status == _status)
     return;
 
-  Utility::print("Set status to: ", (int)status);
-  _realAccel = _goalAccel = ACCEL_MIN;
-  // analogWrite(PIN_ACCEL, _realAccel);
+  Utility::print("Set status to: ", (int)status, "; Accel is: ", _goalAccel);
+  // _realAccel = _goalAccel = ACCEL_MIN;
+  
   switch (status) {
     case Car::Status::Stopped:
       engine.motorAStop();
       break;
     case Car::Status::Forward:
-      engine.motorAForward();
+      engine.motorAForward();//_goalAccel);
       break;
     case Car::Status::Backward:
-      engine.motorAReverse();
+      engine.motorAReverse();//_goalAccel);
       break;
     default:
       // engine.motorAForward();
@@ -93,7 +93,7 @@ inline void Car::shift(int angle) {
   //   angle = 50;
   // else if (angle > 129)
   //   angle = 120;
-  Utility::print("Shift to ", angle);
+  // Utility::print("Shift to ", angle);
   servo.write(angle);
   // delay(110);
   _lastAngle = angle;

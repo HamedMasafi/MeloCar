@@ -12,8 +12,8 @@ Beep beep{ PIN_BEEP };
 
 #define LED_SLEEP_TIME 150
 
-constexpr int accel_min{ 10 };
-constexpr int accel_max{ 80 };
+constexpr int accel_min{ 60 };
+constexpr int accel_max{ 256 };
 
 void step_light() {
   static unsigned long lastLedTime = 0;
@@ -121,6 +121,8 @@ int n = 0;
 void loop() {
   // Utility::print("Read command");
   step_read_command();
+  // step_read_command_from_serial();
+
   // Utility::print("Done");
   // step_light();
   // n++;

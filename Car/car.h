@@ -61,21 +61,27 @@ inline void Car::backward() {
 }
 
 inline void Car::setStatus(Status status) {
-  if (status == _status)
+  if (status == _status && _goalAccel == _realAccel)
     return;
 
-  Utility::print("Set status to: ", (int)status, "; Accel is: ", _goalAccel);
-  // _realAccel = _goalAccel = ACCEL_MIN;
-  
+  // Utility::print("Set status to: ", (int)status, "; Accel is: ", _goalAccel);
+  _realAccel = _goalAccel;  // = ACCEL_MIN;
+
   switch (status) {
     case Car::Status::Stopped:
       engine.motorAStop();
       break;
     case Car::Status::Forward:
-      engine.motorAForward();//_goalAccel);
+      if (_goalAccel == 255)
+        engine.motorAForward();
+      else
+        engine.motorAForward(_goalAccel);
       break;
     case Car::Status::Backward:
-      engine.motorAReverse();//_goalAccel);
+      if (_goalAccel == 255)
+        engine.motorAReverse();
+      else
+        engine.motorAReverse(_goalAccel);
       break;
     default:
       // engine.motorAForward();
@@ -111,14 +117,12 @@ inline bool Car::stepAccel() {
 
   if (_goalAccel - _realAccel > accel_step + 1) {
     _realAccel += accel_step;
-    // analogWrite(PIN_ACCEL, _realAccel);
     Utility::print("accel++", _realAccel, "=>", _goalAccel);
     return true;
   }
 
   if (_goalAccel - _realAccel < -accel_step - 1) {
     _realAccel -= accel_step;
-    // analogWrite(PIN_ACCEL, _realAccel);
     Utility::print("accel--", _realAccel, "=>", _goalAccel);
     return true;
   }

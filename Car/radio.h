@@ -26,6 +26,7 @@ public:
     int right_h{};
     bool sw_left{};
     bool sw_right{};
+    int checksum{};
   };
   Radio(RadioType type, int ce = PIN_CE, int csn = PIN_CSN);
 
@@ -36,6 +37,7 @@ public:
 private:
   RF24 radio;
   RadioType _type;
+  int checksum(Command *cmd);
 };
 
 
@@ -48,10 +50,10 @@ void Radio::setup() {
     Utility::fatal("Unable to connect to NRF");
   }
 
-  radio.setDataRate(RF24_1MBPS);
-  radio.setAutoAck(false);        // Ensure autoACK is enabled
-  radio.setChannel(80);           // Set RF communication channel.
-  radio.setPALevel(RF24_PA_LOW);  //translate to: RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_MED=-6dBM, and RF24_PA_HIGH=0dBm.
+  radio.setDataRate(RF24_250KBPS);
+  radio.setAutoAck(true);        // Ensure autoACK is enabled
+  radio.setChannel(140);           // Set RF communication channel.
+  radio.setPALevel(RF24_PA_MAX);  //translate to: RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_MED=-6dBM, and RF24_PA_HIGH=0dBm.
   radio.setRetries(10, 3);        //Set the number of retry attempts and delay between retry attempts when transmitting a payload. The radio is waiting for an acknowledgement (ACK) packet during the delay between retry attempts.Mode: 0-15,0-15
   radio.setPayloadSize(sizeof(Command));
 
@@ -81,6 +83,7 @@ void Radio::setup() {
 }
 
 bool Radio::send(Command *cmd) {
+  cmd->checksum = checksum(cmd);
   return radio.write(cmd, sizeof(Command));
 }
 bool Radio::read(Command *cmd) {
@@ -94,12 +97,20 @@ bool Radio::read(Command *cmd) {
     //   return false;
     // }
     radio.read(cmd, sizeof(Command));
+
+    // auto sum = checksum(cmd);
+    // if (cmd->checksum != sum)
+      // Utility::print("Check sums are not equal, radio=", cmd->checksum, "; calculated:", sum);
     return true;
   }
 
-  // auto n = radio.getDynamicPayloadSize();
+  auto n = radio.getDynamicPayloadSize();
 
   return false;
+}
+
+int Radio::checksum(Command *cmd) {
+  return (654632 + cmd->left_h + cmd->left_v + cmd->right_h + cmd->sw_right + cmd->sw_left + cmd->sw_right) % 1024;
 }
 
 class RadioServer : public Radio {

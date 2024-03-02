@@ -9,11 +9,12 @@ Car car;
 Radio radio(Radio::RadioType::Client);
 Radio::Command cmd;
 Beep beep{ PIN_BEEP };
+int invalidCmdCount{ 0 };
 
 #define LED_SLEEP_TIME 150
 
 constexpr int accel_min{ 60 };
-constexpr int accel_max{ 256 };
+constexpr int accel_max{ 255 };
 
 void step_light() {
   static unsigned long lastLedTime = 0;
@@ -25,12 +26,11 @@ void step_light() {
 }
 
 void run_command() {
-  int wheel = map(cmd.left_h, 1023, 0, 60, 120);
+  int wheel = map(cmd.left_h, 1023, 0, 70, 120);
   Utility::print("Data from nrf is: lh= ", cmd.left_h, " value=", cmd.right_v);
 
   // wheel
   car.shift(wheel);
-
   // horn
   beep.toggle(cmd.left_v < 10);
 
@@ -39,24 +39,18 @@ void run_command() {
   // engine
   if (cmd.right_v > gas_max) {
     auto accel = map(cmd.right_v, gas_max, 1023, accel_min, accel_max);
-    // Utility::print("gas=", cmd.right_v, "  accel=", accel, " Back");
+    // Utility::print("Accel is=", accel);
     car.setAccel(accel);
     car.forward();
-    // delay(30);
-    // Utility::print("Forward:  ", cmd.right_v, "Accel: ", accel);
   } else if (cmd.right_v < gas_min) {
     auto accel = map(cmd.right_v, gas_min, 0, accel_min, accel_max);
-    // Utility::print("gas=", cmd.right_v, "  accel=", accel, " Forward");
+    // Utility::print("Accel is=", accel);
     car.setAccel(accel);
     car.backward();
-    // delay(30);
-    // Utility::print("Backward: ", cmd.right_v, "Accel: ", accel);
   } else {
-    // Utility::print("gas=", cmd.right_v, "  Stop");
     car.stop();
-    // delay(30);
-    // Utility::print("Stop:     ", cmd.right_v);
   }
+  delay(30);
 }
 
 void step_read_command_from_serial() {
@@ -79,9 +73,16 @@ void step_read_command_from_serial() {
 void step_read_command() {
   if (radio.read(&cmd)) {
     run_command();
-
+    invalidCmdCount = 0;
   } else {
-    // Utility::print("No command");
+    invalidCmdCount++;
+
+    if (invalidCmdCount >= 40000) {
+      car.stop();
+      invalidCmdCount = 0;
+    }
+    // if (invalidCmdCount % 30 == 0) 
+    // Utility::print("Invalid ", invalidCmdCount, " command(s)");
   }
 }
 
@@ -104,12 +105,10 @@ void setup() {
 
   radio.setup();
   Led::set_color(255, 0, 0, 2);
-  delay(1000);
-
   delay(200);
+
   car.shift(90);
   Led::set_color(255, 0, 0, 3);
-  // cmd.param = cmd.type = 0;
 
   Utility::print("Start...");
   Led::set_color(255, 0, 0, 4);

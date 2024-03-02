@@ -1,3 +1,5 @@
+// https://codeload.github.com/nRF24/RF24/zip/refs/heads/master
+
 #ifndef RF_H
 #define RF_H
 
@@ -18,12 +20,13 @@ public:
     Client
   };
   struct Command {
-    int left_v;
-    int left_h;
-    int right_v;
-    int right_h;
-    bool sw_left;
-    bool sw_right;
+    int left_v{};
+    int left_h{};
+    int right_v{};
+    int right_h{};
+    bool sw_left{};
+    bool sw_right{};
+    int checksum{};
   };
   Radio(RadioType type, int ce = PIN_CE, int csn = PIN_CSN);
 
@@ -34,6 +37,7 @@ public:
 private:
   RF24 radio;
   RadioType _type;
+  int checksum(Command *cmd);
 };
 
 
@@ -46,18 +50,18 @@ void Radio::setup() {
     Utility::fatal("Unable to connect to NRF");
   }
 
-  radio.setDataRate(RF24_1MBPS);
-  radio.setAutoAck(false);        // Ensure autoACK is enabled
-  radio.setChannel(80);          // Set RF communication channel.
-  radio.setPALevel(RF24_PA_LOW);  //translate to: RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_MED=-6dBM, and RF24_PA_HIGH=0dBm.
-  radio.setRetries(10, 3);        //Set the number of retry attempts and delay between retry attempts when transmitting a payload. The radio is waiting for an acknowledgement (ACK) packet during the delay between retry attempts.Mode: 0-15,0-15
+  radio.setDataRate(RF24_250KBPS);
+  radio.setAutoAck(true);        // Ensure autoACK is enabled
+  radio.setChannel(140);           // Set RF communication channel.
+  radio.setPALevel(RF24_PA_MAX);  //translate to: RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_MED=-6dBM, and RF24_PA_HIGH=0dBm.
+  radio.setRetries(30, 1);        //Set the number of retry attempts and delay between retry attempts when transmitting a payload. The radio is waiting for an acknowledgement (ACK) packet during the delay between retry attempts.Mode: 0-15,0-15
   radio.setPayloadSize(sizeof(Command));
 
   if (_type == RadioType::Server)
     radio.openWritingPipe(pipeIn);  //Open a pipe for writing
 
   if (_type == RadioType::Client) {
-    radio.openReadingPipe(0, pipeIn);  //Open a pipe for reading
+    radio.openReadingPipe(1, pipeIn);  //Open a pipe for reading
     // radio.openReadingPipe(2, pipeIn);  //Open a pipe for reading
     // radio.openReadingPipe(3, pipeIn);  //Open a pipe for reading
     // radio.openReadingPipe(4, pipeIn);  //Open a pipe for reading
@@ -74,18 +78,35 @@ void Radio::setup() {
   }
   Serial.print("Connected to NRF successfuly; payload size=");
   Serial.println(sizeof(Command));
+  Serial.print("Is chip connected: ");
+  Serial.println(radio.isChipConnected() ? "yes" : "no");
 }
 
 bool Radio::send(Command *cmd) {
+  cmd->checksum = checksum(cmd);
   return radio.write(cmd, sizeof(Command));
 }
 bool Radio::read(Command *cmd) {
   if (radio.available()) {
+    // auto n = radio.getDynamicPayloadSize();
+    // if (n < 1) {
+    //   // Corrupt payload has been flushed
+    //     Serial.print("Invalid data: ");
+    //     Serial.println(n);
+
+    //   return false;
+    // }
     radio.read(cmd, sizeof(Command));
-    return true;
+    return cmd->checksum == checksum(cmd);
   }
 
+  // auto n = radio.getDynamicPayloadSize();
+
   return false;
+}
+
+int Radio::checksum(Command *cmd) {
+  return (654632 + cmd->left_h + cmd->left_v + cmd->right_h + cmd->sw_right + cmd->sw_left + cmd->sw_right) % 1024;
 }
 
 class RadioServer : public Radio {

@@ -58,6 +58,6 @@ void loop() {
                    " ; right v:", FixedSize(cmd.right_v, 5),
                    " ; left:", cmd.sw_left,
                    " ; right:", cmd.sw_right);
-    delay(50);
+    // delay(50);
   }
 }

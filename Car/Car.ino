@@ -4,12 +4,14 @@
 #include "car.h"
 #include "utility.h"
 #include "beep.h"
+#include "task.h"
 
 Car car;
 Radio radio(Radio::RadioType::Client);
 Radio::Command cmd;
-Beep beep{ PIN_BEEP };
+// Beep beep{ PIN_BEEP };
 int invalidCmdCount{ 0 };
+//Elapsed _stopTask{ 2000 };
 
 #define LED_SLEEP_TIME 150
 
@@ -27,12 +29,12 @@ void step_light() {
 
 void run_command() {
   int wheel = map(cmd.left_h, 1023, 0, 70, 120);
-  Utility::print("Data from nrf is: lh= ", cmd.left_h, " value=", cmd.right_v);
+  Utility::print("Data from nrf is: lh= ", FixedSize(cmd.left_h, 3), " rv=", FixedSize(cmd.right_v, 3));
 
   // wheel
   car.shift(wheel);
   // horn
-  beep.toggle(cmd.left_v < 10);
+  // beep.toggle(cmd.left_v < 10);
 
   constexpr int gas_min{ 500 };
   constexpr int gas_max{ 560 };
@@ -50,7 +52,7 @@ void run_command() {
   } else {
     car.stop();
   }
-  delay(30);
+  // delay(30);
 }
 
 void step_read_command_from_serial() {
@@ -77,12 +79,14 @@ void step_read_command() {
   } else {
     invalidCmdCount++;
 
-    if (invalidCmdCount >= 40000) {
-      car.stop();
-      invalidCmdCount = 0;
-    }
-    // if (invalidCmdCount % 30 == 0) 
-    // Utility::print("Invalid ", invalidCmdCount, " command(s)");
+    // delay(30);
+
+    // if (invalidCmdCount >= 40000) {
+    //   car.stop();
+    //   invalidCmdCount = 0;
+    // }
+    // if (invalidCmdCount % 30 == 0)
+    //  Utility::print("Inval id ", invalidCmdCount, " command(s)");
   }
 }
 
@@ -96,6 +100,11 @@ void test() {
 }
 void setup() {
   Serial.begin(9600);
+
+  // _stopTask.setCallback([]() {
+  //   car.stop();
+  // });
+
   Utility::print("Starting");
   Led::setup();
   Led::set_color(255, 0, 0, 0);
@@ -125,8 +134,9 @@ void loop() {
   // Utility::print("Done");
   // step_light();
   // n++;
-  // if (n > 3) {
-  //   car.stepAccel();
+  // if (n > 300) {
+  //   //   car.stepAccel();
+  //   Utility::print("I'm alive");
   //   n = 0;
   // }
 }

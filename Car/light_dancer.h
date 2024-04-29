@@ -39,5 +39,11 @@ public:
   void step() override;
 };
 
+class rainbow_dancer : public basic_light_dancer
+{
+public:
+  void step() override;
+};
+
 
 #endif // LIGHT_DANCER_H

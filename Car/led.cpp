@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "led.h"
 #include "light_dancer.h"
 
@@ -13,7 +14,7 @@ auto color_black = Adafruit_NeoPixel::Color(0, 0, 0);
 auto color_yellow = Adafruit_NeoPixel::Color(255, 255, 0);
 
 void setup() {
-  _dancer = new police_light_dancer;
+  // _dancer = new police_light_dancer;
   pixels.begin();
   pixels.setBrightness(120);
   pixels.show();
@@ -41,6 +42,12 @@ void set_led_color(uint32_t color, int n) {
   pixels.show();
 }
 
+void set_just_one_led(uint32_t color, int n) {
+  pixels.fill(color_black, 0, 7);
+  pixels.setPixelColor(n, color);
+  pixels.show();
+}
+
 void turn_off() {
   set_color(0, 0, 0);
 }
@@ -49,12 +56,13 @@ void turn_on() {
 }
 
 void step() {
-  _dancer->step();
+  if (_dancer)
+    _dancer->step();
 }
 
 void change_dancer() {
   static int index = 0;
-  const int max = 1;
+  const int max = 4;
 
   index = (index + 1) % max;
 
@@ -62,16 +70,34 @@ void change_dancer() {
     delete _dancer;
 
   switch (index) {
+    case 0:
+      turn_off();
+      _dancer = nullptr;
+      break;
+
     case 1:
       _dancer = new police_light_dancer;
+      break;
 
+    case 2:
+      _dancer = new blinker_dancer;
+      break;
+
+    case 3:
+      _dancer = new rainbow_dancer;
       break;
 
     default:
       break;
   }
-
   _dancer->pixels = &pixels;
+
+  if (index) {
+    set_just_one_led(color_green, index);
+    delay(100);
+  } else {
+    turn_off();
+  }
 }
 
 };

@@ -9,7 +9,9 @@
 Car car;
 Radio radio(Radio::RadioType::Client);
 Radio::Command cmd;
-// Beep beep{ PIN_BEEP };
+Beep beep{ PIN_BEEP };
+CommandWithSpace _ledDancerChanger{ 200 };
+
 int invalidCmdCount{ 0 };
 //Elapsed _stopTask{ 2000 };
 
@@ -34,7 +36,9 @@ void run_command() {
   // wheel
   car.shift(wheel);
   // horn
-  // beep.toggle(cmd.left_v < 10);
+  beep.toggle(cmd.left_v < 10);
+  if (cmd.left_v > 950) 
+    _ledDancerChanger.tryExec();
 
   constexpr int gas_min{ 500 };
   constexpr int gas_max{ 560 };
@@ -122,7 +126,14 @@ void setup() {
   Utility::print("Start...");
   Led::set_color(255, 0, 0, 4);
 
+  _ledDancerChanger.setCallback([]() {
+    Led::change_dancer();
+  });
+
   Led::turn_off();
+  beep.toggle(true);
+  delay(100);
+  beep.toggle(false);
 }
 
 int n = 0;
@@ -132,7 +143,7 @@ void loop() {
   // step_read_command_from_serial();
 
   // Utility::print("Done");
-  // step_light();
+  step_light();
   // n++;
   // if (n > 300) {
   //   //   car.stepAccel();

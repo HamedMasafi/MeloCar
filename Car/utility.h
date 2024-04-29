@@ -1,5 +1,6 @@
-#include "WString.h"
 #pragma once
+
+#include "WString.h"
 
 #include "HardwareSerial.h"
 #include <math.h>

@@ -1,7 +1,8 @@
-#define PIN_BEEP 2
-#define PIN_LED 5
-#define PIN_START_POS 6
-#define PIN_WIRE_CONTACT 7
-#define PIN_END_POS 8
+#include <pins_arduino.h>
+#include <Arduino.h>
 
-#define NUM_LEDS 7
+#define PIN_BEEP          8
+#define PIN_START_POS     9
+#define PIN_WIRE_CONTACT  10
+#define PIN_END_POS       11
+#define PIN_LED           12

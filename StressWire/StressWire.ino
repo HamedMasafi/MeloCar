@@ -3,34 +3,98 @@
 #include "pins.h"
 #include "led.h"
 
+#define DEBUG
 
-enum class State {
+// Types ================================
+enum class WireState {
   Free,
   Start,
   End,
   Contact
 };
 
+enum class GameState {
+  Playing,
+  Over,
+  Win
+};
+
+// Variables ================================
+WireState last_state = WireState::Free;
+GameState game_state = GameState::Playing;
+int fault = 0;
+
+// Methods ================================
 void print_pins_state() {
   Utility::print("Start pin:   ", digitalRead(PIN_START_POS));
   Utility::print("End pin:     ", digitalRead(PIN_END_POS));
   Utility::print("Contact pin: ", digitalRead(PIN_WIRE_CONTACT));
 }
 
-State get_state() {
+WireState get_state() {
+  auto ch = (char)Serial.read();
+
+#ifdef DEBUG
+  if (ch == 'c')
+    return WireState::Contact;
+  if (ch == 's')
+    return WireState::Start;
+  if (ch == 'e')
+    return WireState::End;
+#else
   if (digitalRead(PIN_START_POS) == LOW)
-    return State::Start;
+    return WireState::Start;
   if (digitalRead(PIN_END_POS) == LOW)
-    return State::End;
+    return WireState::End;
   if (digitalRead(PIN_WIRE_CONTACT) == LOW)
-    return State::Contact;
-  return State::Free;
+    return WireState::Contact;
+#endif
+
+  return WireState::Free;
 }
 
 void buzz(int freq, int duration) {
   tone(PIN_BEEP, 1000);
   delay(duration);
   noTone(PIN_BEEP);
+}
+
+void setFault(int f) {
+  if (f < 0 || f > 8)
+    return;
+
+  fault = f;
+  set_led_colors(color_red, f);
+}
+
+void start_new_game() {
+  start_light_dance(fault, 0, color_red, 170);
+  game_state = GameState::Playing;
+  fault = 0;
+}
+
+void contact() {
+  // led_clear();
+  if (game_state != GameState::Playing)
+    return;
+
+  tone(PIN_BEEP, 3000);
+
+  setFault(++fault);
+  if (fault >= 8)
+    GameState::Over;
+
+  delay(400);
+  noTone(PIN_BEEP);
+  delay(400);
+}
+
+void finish() {
+  if (game_state != GameState::Playing)
+    return;
+  game_state = GameState::Win;
+  set_led_colors(color_red, fault, color_green);
+  sing(1);
 }
 
 void setup() {
@@ -45,79 +109,42 @@ void setup() {
 
   pixels.begin();
   pixels.setBrightness(30);
-  pixels.show();
 
   set_led_color(color_white);
-  // tone(PIN_BEEP, 500);
   delay(400);
   set_led_color(color_black);
-  // noTone(PIN_BEEP);
 
-  start_light_dance();
+  start_light_dance(0, 8);
 
   Utility::print("Setup done.");
+#ifdef DEBUG
   print_pins_state();
+#endif
 
-  // sing(1);
+  start_new_game();
 }
 
-State last_state = State::Free;
-bool game_lost = false;
-int fault = 0;
-
-void start_new_game() {
-  set_led_color(color_gray);
-  game_lost = false;
-  fault = 0;
-}
-
-void contact() {
-  // led_clear();
-  tone(PIN_BEEP, 3000);
-  fault++;
-  set_led_colors(color_red, fault);
-  game_lost = fault >= 7;
-  delay(400);
-  noTone(PIN_BEEP);
-  delay(400);
-}
-
-void finish() {
-  game_lost = true;
-  // for (int i = fault; i <= NUM_LEDS; ++i) {
-    // set_led_color(color_green, i - fault, fault);
-    // buzz(2000, 200);
-  // }
-  set_led_colors(color_red, fault, color_green);
-  sing(1);
-}
 void loop() {
   auto state = get_state();
 
   if (state == last_state)
     return;
 
-  if (game_lost && state != State::Start)
-    return;
-
   switch (state) {
-    case State::Free:
+    case WireState::Free:
       Utility::print("Free");
-//      if (!game_lost)
-  //      set_led_color(color_black);
       break;
-    case State::Start:
+    case WireState::Start:
       Utility::print("Start");
       start_new_game();
       break;
-    case State::End:
+    case WireState::End:
       Utility::print("End");
       finish();
       break;
-    case State::Contact:
+    case WireState::Contact:
       Utility::print("Contact");
-      if (!game_lost)
-        contact();
+      contact();
       break;
   }
 

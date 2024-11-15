@@ -3,7 +3,7 @@
 #include "pins.h"
 #include "led.h"
 
-#define DEBUG
+// #define DEBUG
 
 // Types ================================
 enum class WireState {

@@ -39,6 +39,8 @@ void setup() {
   strip.show();
 
   disp.setBrightness(0x0f);
+
+  Utility::print("Setup done");
 }
 
 
